@@ -43,10 +43,14 @@ export default {
         {
             name: 'Create image',
             code: 'createImage',
-            parameters: [],
+            parameters: [
+                { name: 'prompt', type: 'string' },
+                { name: 'n', type: 'number' },
+                { name: 'size', type: 'string' },
+            ],
             isAsync: true,
             /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
+            edit: () => import('./src/components/Functions/CreateImage.vue'),
             /* wwEditor:end */
         },
         {

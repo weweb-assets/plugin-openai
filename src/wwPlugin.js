@@ -22,4 +22,9 @@ export default {
         const configuration = new Configuration({ apiKey });
         this.instance = new OpenAIApi(configuration);
     },
+    async createImage({ prompt, n = 1, size = '1024x1024' }) {
+        if (!this.instance) throw new Error('Invalid Supabase configuration.');
+        const { data } = await this.instance.createImage({ prompt, n, size });
+        return data;
+    },
 };
