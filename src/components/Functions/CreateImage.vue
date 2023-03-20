@@ -68,7 +68,7 @@ export default {
             return this.args.size;
         },
         format() {
-            return this.args.format;
+            return this.args.response_format;
         },
         user() {
             return this.args.user;
@@ -84,8 +84,8 @@ export default {
         setSize(size) {
             this.$emit('update:args', { ...this.args, size });
         },
-        setFormat(format) {
-            this.$emit('update:args', { ...this.args, format });
+        setFormat(response_format) {
+            this.$emit('update:args', { ...this.args, response_format });
         },
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });

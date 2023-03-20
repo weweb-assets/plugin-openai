@@ -16,7 +16,24 @@ export default {
         {
             name: 'Create completion',
             code: 'createCompletion',
-            parameters: [],
+            parameters: [
+                { name: 'model', type: 'string' },
+                { name: 'prompt', type: 'array' },
+                { name: 'suffix', type: 'string' },
+                { name: 'max_tokens', type: 'number' },
+                { name: 'temperature', type: 'number' },
+                { name: 'top_p', type: 'number' },
+                { name: 'n', type: 'number' },
+                { name: 'stream', type: 'boolean' },
+                { name: 'logprobs', type: 'number' },
+                { name: 'echo', type: 'boolean' },
+                { name: 'stop', type: 'array' },
+                { name: 'presence_penalty', type: 'number' },
+                { name: 'frequency_penalty', type: 'number' },
+                { name: 'best_of', type: 'number' },
+                { name: 'logit_bias', type: 'object' },
+                { name: 'user', type: 'string' },
+            ],
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/Test.vue'),
@@ -25,7 +42,20 @@ export default {
         {
             name: 'Create chat completion',
             code: 'createChatCompletion',
-            parameters: [],
+            parameters: [
+                { name: 'model', type: 'string' },
+                { name: 'messages', type: 'array' },
+                { name: 'temperature', type: 'number' },
+                { name: 'top_p', type: 'number' },
+                { name: 'n', type: 'number' },
+                { name: 'stream', type: 'boolean' },
+                { name: 'stop', type: 'array' },
+                { name: 'max_tokens', type: 'number' },
+                { name: 'presence_penalty', type: 'number' },
+                { name: 'frequency_penalty', type: 'number' },
+                { name: 'logit_bias', type: 'object' },
+                { name: 'user', type: 'string' },
+            ],
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/Test.vue'),
@@ -34,10 +64,17 @@ export default {
         {
             name: 'Create edit',
             code: 'createEdit',
-            parameters: [],
+            parameters: [
+                { name: 'model', type: 'string' },
+                { name: 'input', type: 'string' },
+                { name: 'instruction', type: 'string' },
+                { name: 'n', type: 'integer' },
+                { name: 'temperature', type: 'number' },
+                { name: 'top_p', type: 'number' },
+            ],
             isAsync: true,
             /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
+            edit: () => import('./src/components/Functions/CreateEdit.vue'),
             /* wwEditor:end */
         },
         {
