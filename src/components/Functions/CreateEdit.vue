@@ -27,9 +27,15 @@
         bindable
     />
     <wwEditorFormRow label="Number of edits">
+        <template #append-label>
+            <div class="label-sm text-stale-500 ml-auto">{{ n }}</div>
+        </template>
         <wwEditorInputRange min="1" max="100" :model-value="n" @update:modelValue="setN" />
     </wwEditorFormRow>
     <wwEditorFormRow label="Temperature">
+        <template #append-label>
+            <div class="label-sm text-stale-500 ml-auto">{{ temperature }}</div>
+        </template>
         <wwEditorInputRange min="0" max="2" :model-value="temperature" @update:modelValue="setTemperature" />
     </wwEditorFormRow>
 </template>
@@ -41,6 +47,14 @@ export default {
         args: { type: Object, default: () => {} },
     },
     emits: ['update:args'],
+    data() {
+        return {
+            modelOptions: [
+                { label: 'text-davinci-edit-001', value: 'text-davinci-edit-001' },
+                { label: 'code-davinci-edit-001', value: 'code-davinci-edit-001' },
+            ],
+        };
+    },
     computed: {
         model() {
             return this.args.model;
@@ -52,13 +66,10 @@ export default {
             return this.args.input;
         },
         n() {
-            return this.args.n;
+            return this.args.n || 1;
         },
         temperature() {
-            return this.args.temperature;
-        },
-        modelOptions() {
-            return this.plugin.models.map(model => ({ label: model.id, value: model.id }));
+            return this.args.temperature || 1;
         },
     },
     methods: {

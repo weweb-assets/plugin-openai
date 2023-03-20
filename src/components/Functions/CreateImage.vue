@@ -10,7 +10,7 @@
     />
     <wwEditorFormRow label="Number of images">
         <template #append-label>
-            <div class="label-sm text-stale-500">{{ n }}</div>
+            <div class="label-sm text-stale-500 ml-auto">{{ n }}</div>
         </template>
         <wwEditorInputRange min="1" max="10" :model-value="n" @update:modelValue="setN" />
     </wwEditorFormRow>
@@ -67,7 +67,7 @@ export default {
             return this.args.prompt || '';
         },
         n() {
-            return this.args.n;
+            return this.args.n || 1;
         },
         size() {
             return this.args.size;
