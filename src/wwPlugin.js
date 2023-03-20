@@ -2,7 +2,7 @@
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
 // import './components/Functions/CreateCompletion.vue';
-// import './components/Functions/CreateChatCompletion.vue';
+import './components/Functions/CreateChatCompletion.vue';
 import './components/Functions/CreateImage.vue';
 import './components/Functions/CreateEdit.vue';
 /* wwEditor:end */

@@ -26,7 +26,7 @@ export default {
             code: 'createChatCompletion',
             isAsync: true,
             /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
+            edit: () => import('./src/components/Functions/CreateChatCompletion.vue'),
             /* wwEditor:end */
         },
         {
