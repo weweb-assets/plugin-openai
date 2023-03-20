@@ -8,23 +8,10 @@
         @update:modelValue="setPrompt"
         bindable
     />
-    <wwEditorInputRow
-        label="Response format"
-        type="select"
-        :options="formatOptions"
-        :model-value="format"
-        @update:modelValue="setFormat"
-        bindable
-    />
-    <wwEditorInputRow
-        label="Size"
-        type="select"
-        :options="sizeOptions"
-        :model-value="size"
-        @update:modelValue="setSize"
-        bindable
-    />
     <wwEditorFormRow label="Number of images">
+        <template #append-label>
+            <div class="label-sm text-stale-500">{{ n }}</div>
+        </template>
         <wwEditorInputRange min="1" max="10" :model-value="n" @update:modelValue="setN" />
     </wwEditorFormRow>
     <wwEditorInputRow
@@ -34,6 +21,24 @@
         :model-value="user"
         @update:modelValue="setUser"
         bindable
+    />
+    <wwEditorInputRow
+        label="Size"
+        type="select"
+        :options="sizeOptions"
+        :model-value="size"
+        @update:modelValue="setSize"
+        bindable
+        small
+    />
+    <wwEditorInputRow
+        label="Response format"
+        type="select"
+        :options="formatOptions"
+        :model-value="format"
+        @update:modelValue="setFormat"
+        bindable
+        small
     />
 </template>
 

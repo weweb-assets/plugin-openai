@@ -33,7 +33,7 @@ export default {
     async fetchModels() {
         if (!this.instance) return [];
         const { data } = await this.instance.listModels();
-        return data;
+        return data.data;
     },
     /* wwEditor:end */
     async createChatCompletion({
