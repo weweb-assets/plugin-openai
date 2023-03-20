@@ -9,39 +9,30 @@
         bindable
     />
     <wwEditorInputRow
-        label="Number of images"
-        placeholder="Default: 1"
-        type="number"
-        min="1"
-        max="10"
-        :model-value="n"
-        @update:modelValue="setN"
-        bindable
-    />
-    <wwEditorInputRow
-        label="User"
-        placeholder=""
-        type="query"
-        :model-value="user"
-        @update:modelValue="setUser"
+        label="Response format"
+        type="select"
+        :options="formatOptions"
+        :model-value="format"
+        @update:modelValue="setFormat"
         bindable
     />
     <wwEditorInputRow
         label="Size"
-        placeholder="Select a size"
         type="select"
         :options="sizeOptions"
         :model-value="size"
         @update:modelValue="setSize"
         bindable
     />
+    <wwEditorFormRow label="Number of images">
+        <wwEditorInputRange min="1" max="10" :model-value="n" @update:modelValue="setN" />
+    </wwEditorFormRow>
     <wwEditorInputRow
-        label="Response format"
-        placeholder="Select a format"
-        type="select"
-        :options="formatOptions"
-        :model-value="format"
-        @update:modelValue="setFormat"
+        label="User"
+        placeholder="Enter a unique identifier"
+        type="query"
+        :model-value="user"
+        @update:modelValue="setUser"
         bindable
     />
 </template>
@@ -56,9 +47,9 @@ export default {
     data() {
         return {
             sizeOptions: [
-                { label: '256x256', value: '256x256' },
+                { label: '1024x1024', value: '1024x1024', default: true },
                 { label: '512x512', value: '512x512' },
-                { label: '1024x1024', value: '1024x1024' },
+                { label: '256x256', value: '256x256' },
             ],
             formatOptions: [
                 { label: 'URL', value: 'url', default: true },
