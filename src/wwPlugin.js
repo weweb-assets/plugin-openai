@@ -107,11 +107,11 @@ export default {
     },
     async createEdit({ model, input, instruction, n, temperature, top_p }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        const { data } = await this.instance.createEdit({ model, input, instruction, n, temperature, top_p });
-        return data;
+        return await this.instance.createEdit({ model, input, instruction, n, temperature, top_p });
     },
     async createImage({ prompt, n, size, response_format, user }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await this.instance.createImage({ prompt, n, size, response_format, user });
+        const { data } = await this.instance.createImage({ prompt, n, size, response_format, user });
+        return data;
     },
 };
