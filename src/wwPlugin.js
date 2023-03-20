@@ -12,7 +12,7 @@ export default {
         Plugin API
     \================================================================================================*/
     onLoad(settings) {
-        this.load(settings.publicData.apiKey);
+        this.load(settings.privateData.apiKey);
     },
     /*=============================================m_ÔÔ_m=============================================\
         OpenAI API
