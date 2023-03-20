@@ -1,10 +1,11 @@
 /* wwEditor:start */
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
+import './components/Functions/CreateImage.vue';
 import './components/Functions/Test.vue';
 /* wwEditor:end */
 
-import { Configuration } from 'openai';
+import { Configuration, OpenAIApi } from 'openai';
 
 export default {
     instance: null,
