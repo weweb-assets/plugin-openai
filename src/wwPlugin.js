@@ -45,13 +45,13 @@ export default {
         /* wwEditor:start */
         response = await wwAxios.post(
             `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
-            data
+            { data }
         );
         /* wwEditor:end */
         /* wwFront:start */
         response = await axios.post(
             `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-            data
+            { data }
         );
         /* wwFront:end */
         return response.data.data;
@@ -97,14 +97,13 @@ export default {
         /* wwEditor:start */
         response = await wwAxios.post(
             `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
-            data
+            { data }
         );
         /* wwEditor:end */
         /* wwFront:start */
-        response = await axios.post(
-            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`,
-            data
-        );
+        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`, {
+            data,
+        });
         /* wwFront:end */
         return response.data.data;
     },
@@ -113,13 +112,12 @@ export default {
         const data = { model, input, instruction, n, temperature, top_p };
         let response = null;
         /* wwEditor:start */
-        response = await wwAxios.post(
-            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/edits`,
-            data
-        );
+        response = await wwAxios.post(`${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/edits`, {
+            data,
+        });
         /* wwEditor:end */
         /* wwFront:start */
-        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, data);
+        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, { data });
         /* wwFront:end */
         return response.data.data;
     },
@@ -130,13 +128,13 @@ export default {
         /* wwEditor:start */
         response = await wwAxios.post(
             `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/images/generations`,
-            data
+            { data }
         );
         /* wwEditor:end */
         /* wwFront:start */
         response = await axios.post(
             `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/images/generations`,
-            data
+            { data }
         );
         /* wwFront:end */
         return response.data.data;
