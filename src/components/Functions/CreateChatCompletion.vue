@@ -7,7 +7,6 @@
         :model-value="model"
         @update:modelValue="setModel"
         required
-        bindable
     />
     <wwEditorInputRow
         label="Messages"
@@ -28,60 +27,230 @@
                 bindable
                 @update:modelValue="setItem({ ...item, role: $event })"
             />
-            <wwEditorInputRow
-                type="query"
-                :model-value="item.content"
-                label="Content"
-                placeholder="Enter a value"
-                small
-                bindable
-                @update:modelValue="setItem({ ...item, content: $event })"
-            />
+            <wwEditorFormRow label="Content">
+                <div class="flex items-center">
+                    <wwEditorInput
+                        type="query"
+                        :model-value="item.content"
+                        label="Content"
+                        placeholder="Enter a value"
+                        small
+                        bindable
+                        @update:modelValue="setItem({ ...item, content: $event })"
+                    />
+                    <wwEditorQuestionMark
+                        tooltip-position="top-left"
+                        class="ml-2"
+                        :forcedContent="questionMark.messages"
+                    />
+                </div>
+            </wwEditorFormRow>
         </template>
     </wwEditorInputRow>
     <wwEditorInputRow
-        label="User"
-        placeholder="Enter a unique identifier"
-        type="query"
-        :model-value="user"
-        @update:modelValue="setUser"
+        label="Stop"
+        type="array"
+        :model-value="stop"
         bindable
-    />
-    <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" bindable />
-    <wwEditorFormRow label="Maximum tokens">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ max_tokens }}</div>
+        @update:modelValue="setStop"
+        @add-item="setStop([...stop, ''])"
+    >
+        <template #default="{ item, setItem }">
+            <wwEditorFormRow>
+                <div class="flex items-center">
+                    <wwEditorInput
+                        placeholder="Enter a value"
+                        type="query"
+                        :model-value="item"
+                        @update:modelValue="setItem"
+                        bindable
+                        small
+                    />
+                    <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.stop" />
+                </div>
+            </wwEditorFormRow>
         </template>
-        <wwEditorInputRange min="1" max="32000" :model-value="max_tokens" @update:modelValue="setMaxTokens" />
+    </wwEditorInputRow>
+    <wwEditorFormRow label="User">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="User"
+                placeholder="Enter a unique identifier"
+                type="query"
+                :model-value="user"
+                @update:modelValue="setUser"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.user" />
+        </div>
+    </wwEditorFormRow>
+    <!-- <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" bindable /> -->
+    <wwEditorFormRow label="Maximum tokens">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Number of edits"
+                type="number"
+                min="1"
+                max="32000"
+                :model-value="max_tokens"
+                @update:modelValue="setMaxTokens"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isMaxTokensBound"
+                class="ml-2"
+                min="1"
+                max="32000"
+                :model-value="max_tokens"
+                @update:modelValue="setMaxTokens"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.max_tokens" />
+        </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Number of choices">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ n }}</div>
-        </template>
-        <wwEditorInputRange min="1" max="100" :model-value="n" @update:modelValue="setN" />
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Number of choices"
+                type="number"
+                min="1"
+                max="100"
+                :model-value="n"
+                @update:modelValue="setN"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isNBound"
+                class="ml-2"
+                min="1"
+                max="100"
+                :model-value="n"
+                @update:modelValue="setN"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.n" />
+        </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Temperature">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ temperature }}</div>
-        </template>
-        <wwEditorInputRange min="0" max="2" :model-value="temperature" @update:modelValue="setTemperature" />
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Temperature"
+                type="number"
+                min="0"
+                max="2"
+                step="0.1"
+                :model-value="temperature"
+                @update:modelValue="setTemperature"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isTemperatureBound"
+                class="ml-2"
+                min="0"
+                max="2"
+                step="0.1"
+                :model-value="temperature"
+                @update:modelValue="setTemperature"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.temperature" />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Top p">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Top p"
+                type="number"
+                min="0"
+                max="2"
+                step="0.1"
+                :model-value="top_p"
+                @update:modelValue="setTopP"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isTopPBound"
+                class="ml-2"
+                min="0"
+                max="2"
+                step="0.1"
+                :model-value="top_p"
+                @update:modelValue="setTopP"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.top_p" />
+        </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Presence penalty">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ presence_penalty }}</div>
-        </template>
-        <wwEditorInputRange min="-2" max="2" :model-value="presence_penalty" @update:modelValue="setPresencePenalty" />
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Presence penalty"
+                type="number"
+                min="-2"
+                max="2"
+                step="0.1"
+                :model-value="presence_penalty"
+                @update:modelValue="setPresencePenalty"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isPresencePenaltyBound"
+                class="ml-2"
+                min="-2"
+                max="2"
+                step="0.1"
+                :model-value="presence_penalty"
+                @update:modelValue="setPresencePenalty"
+            />
+            <wwEditorQuestionMark
+                tooltip-position="top-left"
+                class="ml-2"
+                :forcedContent="questionMark.presence_penalty"
+            />
+        </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Frequency penalty">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ frequency_penalty }}</div>
-        </template>
-        <wwEditorInputRange
-            min="-2"
-            max="2"
-            :model-value="frequency_penalty"
-            @update:modelValue="setFrequencyPenalty"
-        />
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Frequency penalty"
+                type="number"
+                min="-2"
+                max="2"
+                step="0.1"
+                :model-value="frequency_penalty"
+                @update:modelValue="setFrequencyPenalty"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isFrequencyPenaltyBound"
+                class="ml-2"
+                min="-2"
+                max="2"
+                step="0.1"
+                :model-value="frequency_penalty"
+                @update:modelValue="setFrequencyPenalty"
+            />
+            <wwEditorQuestionMark
+                tooltip-position="top-left"
+                class="ml-2"
+                :forcedContent="questionMark.frequency_penalty"
+            />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Stop">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Stop"
+                placeholder="Enter a unique identifier"
+                type="query"
+                :model-value="stop"
+                @update:modelValue="setStop"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.stop" />
+        </div>
     </wwEditorFormRow>
 </template>
 
@@ -102,6 +271,30 @@ export default {
                 { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
                 { label: 'ggpt-3.5-turbo-0301', value: 'ggpt-3.5-turbo-0301' },
             ],
+            roleOptions: [
+                { label: 'System', value: 'system' },
+                { label: 'Assistant', value: 'assistant' },
+                { label: 'User', value: 'user' },
+            ],
+            questionMark: {
+                messages: 'The messages to generate chat completions for.',
+                temperature: `What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+
+We generally recommend altering this or top p but not both.`,
+                top_p: `An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+
+We generally recommend altering this or temperature but not both.`,
+                n: 'How many chat completion choices to generate for each input message.',
+                stream: '',
+                stop: 'Up to 4 sequences where the API will stop generating further tokens.',
+                max_tokens: `The maximum number of tokens to generate in the chat completion.
+
+The total length of input tokens and generated tokens is limited by the model's context length.`,
+                presence_penalty: `Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.`,
+                frequency_penalty: `umber between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`,
+                logit_bias: '',
+                user: 'A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.',
+            },
         };
     },
     computed: {
@@ -115,22 +308,49 @@ export default {
             return this.args.stream;
         },
         n() {
-            return this.args.n || 1;
+            if (this.args.n === undefined) return 1;
+            return this.args.n;
+        },
+        isNBound() {
+            return typeof this.n === 'object';
         },
         temperature() {
-            return this.args.temperature || 1;
+            if (this.args.temperature === undefined) return 1;
+            return this.args.temperature;
+        },
+        isTemperatureBound() {
+            return typeof this.temperature === 'object';
+        },
+        top_p() {
+            if (this.args.top_p === undefined) return 1;
+            return this.args.top_p;
+        },
+        isTopPBound() {
+            return typeof this.top_p === 'object';
         },
         stop() {
-            return this.args.stop;
+            return this.args.stop || [];
         },
         max_tokens() {
-            return this.args.max_tokens || 100;
+            if (this.args.max_tokens === undefined) return 1000;
+            return this.args.max_tokens;
+        },
+        isMaxTokensBound() {
+            return typeof this.max_tokens === 'object';
         },
         presence_penalty() {
-            return this.args.presence_penalty || 0;
+            if (this.args.presence_penalty === undefined) return 0;
+            return this.args.presence_penalty;
+        },
+        isPresencePenaltyBound() {
+            return typeof this.presence_penalty === 'object';
         },
         frequency_penalty() {
-            return this.args.frequency_penalty || 0;
+            if (this.args.frequency_penalty === undefined) return 0;
+            return this.args.frequency_penalty;
+        },
+        isFrequencyPenaltyBound() {
+            return typeof this.frequency_penalty === 'object';
         },
         logit_bias() {
             return this.args.logit_bias;
@@ -154,6 +374,9 @@ export default {
         },
         setTemperature(temperature) {
             this.$emit('update:args', { ...this.args, temperature });
+        },
+        setTopP(top_p) {
+            this.$emit('update:args', { ...this.args, top_p });
         },
         setStop(stop) {
             this.$emit('update:args', { ...this.args, stop });
