@@ -7,35 +7,10 @@ import './components/Functions/CreateImage.vue';
 import './components/Functions/CreateEdit.vue';
 /* wwEditor:end */
 
-import { Configuration, OpenAIApi } from 'openai';
-
 export default {
-    instance: null,
-    models: null,
-    /*=============================================m_ÔÔ_m=============================================\
-        Plugin API
-    \================================================================================================*/
-    async onLoad(settings) {
-        await this.load(settings.privateData.apiKey);
-    },
     /*=============================================m_ÔÔ_m=============================================\
         OpenAI API
     \================================================================================================*/
-    async load(apiKey) {
-        if (!apiKey) return;
-        const configuration = new Configuration({ apiKey });
-        this.instance = new OpenAIApi(configuration);
-        /* wwEditor:start */
-        this.models = await this.fetchModels();
-        /* wwEditor:end */
-    },
-    /* wwEditor:start */
-    async fetchModels() {
-        if (!this.instance) return [];
-        const { data } = await this.instance.listModels();
-        return data.data;
-    },
-    /* wwEditor:end */
     async createChatCompletion({
         model,
         messages,
@@ -49,10 +24,10 @@ export default {
         logit_bias,
         user,
     }) {
-        if (!this.instance) throw new Error('Invalid Supabase configuration.');
+        const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = logit_bias.reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
-        const { data } = await this.instance.createChatCompletion({
+        const data = {
             model,
             messages,
             messages,
@@ -65,8 +40,21 @@ export default {
             frequency_penalty,
             logit_bias,
             user,
-        });
-        return data;
+        };
+        let response = null;
+        /* wwEditor:start */
+        response = await wwAxios.post(
+            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
+            data
+        );
+        /* wwEditor:end */
+        /* wwFront:start */
+        response = await axios.post(
+            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
+            data
+        );
+        /* wwFront:end */
+        return response.data.data;
     },
     async createCompletion({
         model,
@@ -85,8 +73,10 @@ export default {
         logit_bias,
         user,
     }) {
-        if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        const { data } = await this.instance.createCompletion({
+        const projectId = wwLib.wwWebsiteData.getInfo().id;
+        logit_bias = logit_bias.reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
+        if (!stop || !stop.length) stop = undefined;
+        const data = {
             model,
             prompt,
             suffix,
@@ -102,16 +92,53 @@ export default {
             best_of,
             logit_bias,
             user,
-        });
-        return data;
+        };
+        let response = null;
+        /* wwEditor:start */
+        response = await wwAxios.post(
+            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
+            data
+        );
+        /* wwEditor:end */
+        /* wwFront:start */
+        response = await axios.post(
+            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`,
+            data
+        );
+        /* wwFront:end */
+        return response.data.data;
     },
     async createEdit({ model, input = '', instruction, n = 1, temperature = 1, top_p = 1 }) {
-        if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await this.instance.createEdit({ model, input, instruction, n, temperature, top_p });
+        const projectId = wwLib.wwWebsiteData.getInfo().id;
+        const data = { model, input, instruction, n, temperature, top_p };
+        let response = null;
+        /* wwEditor:start */
+        response = await wwAxios.post(
+            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/edits`,
+            data
+        );
+        /* wwEditor:end */
+        /* wwFront:start */
+        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, data);
+        /* wwFront:end */
+        return response.data.data;
     },
     async createImage({ prompt, n = 1, size = '1024x1024', response_format = 'url', user }) {
-        if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        const { data } = await this.instance.createImage({ prompt, n, size, response_format, user });
-        return data.data;
+        const projectId = wwLib.wwWebsiteData.getInfo().id;
+        const data = { prompt, n, size, response_format, user };
+        let response = null;
+        /* wwEditor:start */
+        response = await wwAxios.post(
+            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/images/generations`,
+            data
+        );
+        /* wwEditor:end */
+        /* wwFront:start */
+        response = await axios.post(
+            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/images/generations`,
+            data
+        );
+        /* wwFront:end */
+        return response.data.data;
     },
 };

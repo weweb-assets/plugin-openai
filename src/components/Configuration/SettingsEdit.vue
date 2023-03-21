@@ -39,10 +39,6 @@ export default {
                 ...this.settings,
                 privateData: { ...this.settings.privateData, apiKey },
             });
-            this.$nextTick(this.loadInstance);
-        },
-        loadInstance() {
-            this.plugin.load(this.settings.privateData.apiKey);
         },
     },
 };
