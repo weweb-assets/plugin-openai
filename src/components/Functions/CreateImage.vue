@@ -9,10 +9,17 @@
         bindable
     />
     <wwEditorFormRow label="Number of images">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ n }}</div>
-        </template>
-        <wwEditorInputRange min="1" max="10" :model-value="n" @update:modelValue="setN" />
+        <div class="flex items-center">
+            <wwEditorInput type="number" min="1" max="10" :model-value="n" @update:modelValue="setN" bindable />
+            <wwEditorInputRange
+                v-if="isNBound"
+                class="ml-2"
+                min="1"
+                max="10"
+                :model-value="n"
+                @update:modelValue="setN"
+            />
+        </div>
     </wwEditorFormRow>
     <wwEditorInputRow
         label="User"
@@ -68,6 +75,9 @@ export default {
         },
         n() {
             return this.args.n || 1;
+        },
+        isNBound() {
+            return typeof this.n === 'object';
         },
         size() {
             return this.args.size;
