@@ -8,39 +8,32 @@
         @update:modelValue="setModel"
         required
     />
-    <wwEditorInputRow
-        label="Messages"
-        type="array"
-        :model-value="messages"
-        bindable
-        @update:modelValue="setMessages"
-        @add-item="setMessages([...messages, {}])"
-    >
-        <template #default="{ item, setItem }">
-            <wwEditorInputRow
-                type="select"
-                :model-value="item.role"
-                label="Role"
-                placeholder="Select a role"
-                :options="roleOptions"
-                small
+    <wwEditorFormRow label="Prompt">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Prompt"
+                placeholder="Enter a value"
+                type="string"
+                :model-value="prompt"
+                @update:modelValue="setPrompt"
                 bindable
-                @update:modelValue="setItem({ ...item, role: $event })"
             />
-            <div class="flex items-center">
-                <wwEditorInputRow
-                    type="query"
-                    :model-value="item.content"
-                    label="Content"
-                    placeholder="Enter a value"
-                    small
-                    bindable
-                    @update:modelValue="setItem({ ...item, content: $event })"
-                />
-                <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.messages" />
-            </div>
-        </template>
-    </wwEditorInputRow>
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.prompt" />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Suffix">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Suffix"
+                placeholder="Enter a value"
+                type="string"
+                :model-value="suffix"
+                @update:modelValue="setSuffix"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.suffix" />
+        </div>
+    </wwEditorFormRow>
     <wwEditorFormRow label="User">
         <div class="flex items-center">
             <wwEditorInput
@@ -60,7 +53,7 @@
                 label="Number of edits"
                 type="number"
                 min="1"
-                max="32000"
+                max="4096"
                 :model-value="max_tokens"
                 @update:modelValue="setMaxTokens"
                 bindable
@@ -70,7 +63,7 @@
                 v-if="!isMaxTokensBound"
                 class="ml-2"
                 min="1"
-                max="32000"
+                max="4096"
                 :model-value="max_tokens"
                 @update:modelValue="setMaxTokens"
             />
@@ -98,6 +91,29 @@
                 @update:modelValue="setN"
             />
             <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.n" />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Best of">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Best of"
+                type="number"
+                min="0"
+                max="5"
+                :model-value="best_of"
+                @update:modelValue="setBestOf"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isBestOf"
+                class="ml-2"
+                min="0"
+                max="5"
+                :model-value="best_of"
+                @update:modelValue="setBestOf"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.best_of" />
         </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Temperature">
@@ -208,6 +224,29 @@
             />
         </div>
     </wwEditorFormRow>
+    <wwEditorFormRow label="Logprobs">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Logprobs"
+                type="number"
+                min="0"
+                max="5"
+                :model-value="logprobs"
+                @update:modelValue="setLogprobs"
+                bindable
+                small
+            />
+            <wwEditorInputRange
+                v-if="!isLogprobs"
+                class="ml-2"
+                min="0"
+                max="5"
+                :model-value="logprobs"
+                @update:modelValue="setLogprobs"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.logprobs" />
+        </div>
+    </wwEditorFormRow>
     <wwEditorInputRow
         label="Logit bias"
         type="array"
@@ -289,31 +328,42 @@ export default {
                 { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
                 { label: 'ggpt-3.5-turbo-0301', value: 'ggpt-3.5-turbo-0301' },
             ],
-            roleOptions: [
-                { label: 'System', value: 'system' },
-                { label: 'Assistant', value: 'assistant' },
-                { label: 'User', value: 'user' },
-            ],
             questionMark: {
-                messages: 'The messages to generate chat completions for.',
+                prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
+
+Note that <|endoftext|> is the document separator that the model sees during training, so if a prompt is not specified the model will generate as if from the beginning of a new document.`,
+                suffix: 'The suffix that comes after a completion of inserted text.',
                 temperature: `What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
 We generally recommend altering this or top p but not both.`,
                 top_p: `An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
 We generally recommend altering this or temperature but not both.`,
-                n: 'How many chat completion choices to generate for each input message.',
-                stream: '',
-                stop: 'Up to 4 sequences where the API will stop generating further tokens.',
-                max_tokens: `The maximum number of tokens to generate in the chat completion.
+                n: `How many completions to generate for each prompt.
 
-The total length of input tokens and generated tokens is limited by the model's context length.`,
+Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.`,
+                stream: '',
+                stop: 'Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.',
+                max_tokens: `The maximum number of tokens to generate in the completion.
+
+The token count of your prompt plus max tokens cannot exceed the model's context length. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).`,
                 presence_penalty: `Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.`,
                 frequency_penalty: `umber between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`,
                 logit_bias: `Modify the likelihood of specified tokens appearing in the completion.
 
-Accepts a json object that maps tokens (specified by their token ID in the tokenizer) to an associated bias value from -100 to 100. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token.`,
+Accepts a json object that maps tokens (specified by their token ID in the GPT tokenizer) to an associated bias value from -100 to 100. You can use this tokenizer tool (which works for both GPT-2 and GPT-3) to convert text to token IDs. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token.
+
+As an example, you can pass {"50256": -100} to prevent the <|endoftext|> token from being generated.`,
                 user: 'A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.',
+                logprobs: `Include the log probabilities on the logprobs most likely tokens, as well the chosen tokens. For example, if logprobs is 5, the API will return a list of the 5 most likely tokens. The API will always return the logprob of the sampled token, so there may be up to logprobs+1 elements in the response.
+
+The maximum value for logprobs is 5. If you need more than this, please contact us through our Help center and describe your use case.`,
+                echo: 'Echo back the prompt in addition to the completion.',
+                best_of: `Generates best_of completions server-side and returns the "best" (the one with the highest log probability per token). Results cannot be streamed.
+
+When used with n, best_of controls the number of candidate completions and n specifies how many to return - best_of must be greater than n.
+
+Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.`,
             },
         };
     },
@@ -321,8 +371,8 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         model() {
             return this.args.model;
         },
-        messages() {
-            return this.args.messages || [];
+        prompt() {
+            return this.args.prompt;
         },
         n() {
             if (this.args.n === undefined) return 1;
@@ -369,8 +419,25 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         isFrequencyPenaltyBound() {
             return typeof this.frequency_penalty === 'object';
         },
+        logprobs() {
+            if (this.args.logprobs === undefined) return 1;
+            return this.args.logprobs;
+        },
+        isLogprobsBound() {
+            return typeof this.logprobs === 'object';
+        },
+        best_of() {
+            if (this.args.best_of === undefined) return 1;
+            return this.args.best_of;
+        },
+        isBestOfBound() {
+            return typeof this.best_of === 'object';
+        },
         logit_bias() {
             return this.args.logit_bias || [];
+        },
+        suffix() {
+            return this.args.suffix;
         },
         user() {
             return this.args.user;
@@ -380,8 +447,11 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         setModel(model) {
             this.$emit('update:args', { ...this.args, model });
         },
-        setMessages(messages) {
-            this.$emit('update:args', { ...this.args, messages });
+        setPrompt(prompt) {
+            this.$emit('update:args', { ...this.args, prompt });
+        },
+        setSuffix(suffix) {
+            this.$emit('update:args', { ...this.args, suffix });
         },
         setN(n) {
             this.$emit('update:args', { ...this.args, n });
@@ -403,6 +473,12 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         },
         setFrequencyPenalty(frequency_penalty) {
             this.$emit('update:args', { ...this.args, frequency_penalty });
+        },
+        setBestOf(best_of) {
+            this.$emit('update:args', { ...this.args, best_of });
+        },
+        setLogprobs(logprobs) {
+            this.$emit('update:args', { ...this.args, logprobs });
         },
         setLogitBias(logit_bias) {
             this.$emit('update:args', { ...this.args, logit_bias });

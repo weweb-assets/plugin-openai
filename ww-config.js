@@ -18,7 +18,7 @@ export default {
             code: 'createCompletion',
             isAsync: true,
             /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
+            edit: () => import('./src/components/Functions/CreateCompletion.vue'),
             /* wwEditor:end */
         },
         {
