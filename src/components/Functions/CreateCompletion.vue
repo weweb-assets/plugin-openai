@@ -26,7 +26,7 @@
             <wwEditorInput
                 label="Suffix"
                 placeholder="Enter a value"
-                type="string"
+                type="query"
                 :model-value="suffix"
                 @update:modelValue="setSuffix"
                 bindable
@@ -98,8 +98,8 @@
             <wwEditorInput
                 label="Best of"
                 type="number"
-                min="0"
-                max="5"
+                min="1"
+                max="100"
                 :model-value="best_of"
                 @update:modelValue="setBestOf"
                 bindable
@@ -108,8 +108,8 @@
             <wwEditorInputRange
                 v-if="!isBestOf"
                 class="ml-2"
-                min="0"
-                max="5"
+                min="1"
+                max="100"
                 :model-value="best_of"
                 @update:modelValue="setBestOf"
             />
@@ -415,7 +415,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
             return typeof this.frequency_penalty === 'object';
         },
         logprobs() {
-            if (this.args.logprobs === undefined) return 1;
+            if (this.args.logprobs === undefined) return 0;
             return this.args.logprobs;
         },
         isLogprobsBound() {
