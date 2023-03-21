@@ -106,7 +106,7 @@
                 small
             />
             <wwEditorInputRange
-                v-if="!isBestOf"
+                v-if="!isBestOfBound"
                 class="ml-2"
                 min="1"
                 max="100"
@@ -237,7 +237,7 @@
                 small
             />
             <wwEditorInputRange
-                v-if="!isLogprobs"
+                v-if="!isLogprobsBound"
                 class="ml-2"
                 min="0"
                 max="5"
