@@ -27,16 +27,37 @@
         bindable
     />
     <wwEditorFormRow label="Number of edits">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ n }}</div>
-        </template>
-        <wwEditorInputRange min="1" max="100" :model-value="n" @update:modelValue="setN" />
+        <div class="flex items-center">
+            <wwEditorInput type="number" min="1" max="100" :model-value="n" @update:modelValue="setN" bindable />
+            <wwEditorInputRange
+                v-if="isNBound"
+                class="ml-2"
+                min="1"
+                max="100"
+                :model-value="n"
+                @update:modelValue="setN"
+            />
+        </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Temperature">
-        <template #append-label>
-            <div class="label-sm text-stale-500 ml-auto">{{ temperature }}</div>
-        </template>
-        <wwEditorInputRange min="0" max="2" :model-value="temperature" @update:modelValue="setTemperature" />
+        <div class="flex items-center">
+            <wwEditorInput
+                type="number"
+                min="0"
+                max="2"
+                step="0.1"
+                :model-value="temperature"
+                @update:modelValue="setTemperature"
+                bindable
+            />
+            <wwEditorInputRange
+                v-if="!isTemperatureBound"
+                min="0"
+                max="2"
+                :model-value="temperature"
+                @update:modelValue="setTemperature"
+            />
+        </div>
     </wwEditorFormRow>
 </template>
 
@@ -67,6 +88,9 @@ export default {
         },
         n() {
             return this.args.n || 1;
+        },
+        isNBound() {
+            return typeof this.n === 'object';
         },
         temperature() {
             return this.args.temperature || 1;

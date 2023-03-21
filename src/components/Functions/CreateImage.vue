@@ -12,7 +12,7 @@
         <div class="flex items-center">
             <wwEditorInput type="number" min="1" max="10" :model-value="n" @update:modelValue="setN" bindable />
             <wwEditorInputRange
-                v-if="isNBound"
+                v-if="!isNBound"
                 class="ml-2"
                 min="1"
                 max="10"
