@@ -366,7 +366,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
             return typeof this.frequency_penalty === 'object';
         },
         logit_bias() {
-            return this.args.logit_bias;
+            return this.args.logit_bias || [];
         },
         user() {
             return this.args.user;
