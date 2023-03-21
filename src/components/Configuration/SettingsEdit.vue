@@ -1,7 +1,7 @@
 <template>
     <wwEditorFormRow required label="API key">
         <template #append-label>
-            <a class="xano-settings-edit__link" href="https://platform.openai.com/account/api-keys" target="_blank">
+            <a class="ww-editor-link ml-auto" href="https://platform.openai.com/account/api-keys" target="_blank">
                 Find it here
             </a>
         </template>
@@ -12,9 +12,9 @@
                 placeholder="**************"
                 :model-value="settings.privateData.apiKey"
                 @update:modelValue="changeApiKey"
-                class="w-full mr-3"
+                class="w-100 mr-2"
             />
-            <button class="pointer" @click.prevent="isKeyVisible = !isKeyVisible">
+            <button class="ww-editor-button -icon -secondary -dark" @click.prevent="isKeyVisible = !isKeyVisible">
                 <wwEditorIcon :name="isKeyVisible ? 'eye-off' : 'eye'"></wwEditorIcon>
             </button>
         </div>
