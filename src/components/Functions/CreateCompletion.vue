@@ -320,6 +320,17 @@ export default {
     emits: ['update:args'],
     data() {
         return {
+            modelOptions: [
+                { label: 'text-davinci-003', value: 'text-davinci-003' },
+                { label: 'text-davinci-002', value: 'text-davinci-002' },
+                { label: 'text-curie-001', value: 'text-curie-001' },
+                { label: 'text-babbage-001', value: 'text-babbage-001' },
+                { label: 'text-ada-001', value: 'text-ada-001' },
+                { label: 'davinci', value: 'davinci' },
+                { label: 'curie', value: 'curie' },
+                { label: 'babbage', value: 'babbage' },
+                { label: 'ada', value: 'ada' },
+            ],
             questionMark: {
                 prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
@@ -360,9 +371,6 @@ Note: Because this parameter generates many completions, it can quickly consume 
         };
     },
     computed: {
-        modelOptions() {
-            return (this.plugin.models || []).map(model => ({ label: model.id, value: model.id }));
-        },
         model() {
             return this.args.model;
         },
