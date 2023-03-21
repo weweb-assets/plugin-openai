@@ -27,16 +27,18 @@
                 bindable
                 @update:modelValue="setItem({ ...item, role: $event })"
             />
-            <wwEditorInputRow
-                type="query"
-                :model-value="item.content"
-                label="Content"
-                placeholder="Enter a value"
-                small
-                bindable
-                @update:modelValue="setItem({ ...item, content: $event })"
-            />
-            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.messages" />
+            <div class="flex items-center">
+                <wwEditorInputRow
+                    type="query"
+                    :model-value="item.content"
+                    label="Content"
+                    placeholder="Enter a value"
+                    small
+                    bindable
+                    @update:modelValue="setItem({ ...item, content: $event })"
+                />
+                <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.messages" />
+            </div>
         </template>
     </wwEditorInputRow>
     <wwEditorFormRow label="User">
@@ -225,18 +227,24 @@
                 bindable
                 @update:modelValue="setItem({ ...item, key: $event })"
             />
-            <wwEditorInputRow
-                type="number"
-                :model-value="item.value"
-                label="Bias value"
-                min="-100"
-                max="100"
-                placeholder="Enter a value"
-                small
-                bindable
-                @update:modelValue="setItem({ ...item, value: $event })"
-            />
-            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.logit_bias" />
+            <div class="flex items-center">
+                <wwEditorInputRow
+                    type="number"
+                    :model-value="item.value"
+                    label="Bias value"
+                    min="-100"
+                    max="100"
+                    placeholder="Enter a value"
+                    small
+                    bindable
+                    @update:modelValue="setItem({ ...item, value: $event })"
+                />
+                <wwEditorQuestionMark
+                    tooltip-position="top-left"
+                    class="ml-2"
+                    :forcedContent="questionMark.logit_bias"
+                />
+            </div>
         </template>
     </wwEditorInputRow>
     <wwEditorInputRow
@@ -248,19 +256,17 @@
         @add-item="setStop([...stop, ''])"
     >
         <template #default="{ item, setItem }">
-            <wwEditorFormRow>
-                <div class="flex items-center">
-                    <wwEditorInput
-                        placeholder="Enter a value"
-                        type="query"
-                        :model-value="item"
-                        @update:modelValue="setItem"
-                        bindable
-                        small
-                    />
-                    <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.stop" />
-                </div>
-            </wwEditorFormRow>
+            <div class="flex items-center">
+                <wwEditorInputRow
+                    placeholder="Enter a value"
+                    type="query"
+                    :model-value="item"
+                    @update:modelValue="setItem"
+                    bindable
+                    small
+                />
+                <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.stop" />
+            </div>
         </template>
     </wwEditorInputRow>
 </template>

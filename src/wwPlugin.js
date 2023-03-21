@@ -51,7 +51,7 @@ export default {
         user,
     }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await this.instance.createChatCompletion({
+        const { data } = await this.instance.createChatCompletion({
             model,
             messages,
             messages,
@@ -66,6 +66,7 @@ export default {
             logit_bias,
             user,
         });
+        return data;
     },
     async createCompletion({
         model,
@@ -86,7 +87,7 @@ export default {
         user,
     }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await this.instance.createCompletion({
+        const { data } = await this.instance.createCompletion({
             model,
             prompt,
             suffix,
@@ -104,6 +105,7 @@ export default {
             logit_bias,
             user,
         });
+        return data;
     },
     async createEdit({ model, input = '', instruction, n = 1, temperature = 1, top_p = 1 }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
@@ -112,6 +114,6 @@ export default {
     async createImage({ prompt, n = 1, size = '1024x1024', response_format = 'url', user }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
         const { data } = await this.instance.createImage({ prompt, n, size, response_format, user });
-        return data;
+        return data.data;
     },
 };
