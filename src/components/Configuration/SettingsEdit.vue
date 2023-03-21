@@ -1,7 +1,7 @@
 <template>
     <wwEditorFormRow required label="API key">
         <template #append-label>
-            <a class="ww-editor-link ml-auto" href="https://platform.openai.com/account/api-keys" target="_blank">
+            <a class="ww-editor-link ml-2" href="https://platform.openai.com/account/api-keys" target="_blank">
                 Find it here
             </a>
         </template>

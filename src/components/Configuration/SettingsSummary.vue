@@ -12,7 +12,7 @@ export default {
     },
     computed: {
         apiKey() {
-            return (this.settings.privateData.apiKey || '').replace(/./, '*');
+            return (this.settings.privateData.apiKey || '').replace(/./g, '*');
         },
     },
 };
