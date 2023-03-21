@@ -10,19 +10,10 @@
     />
     <wwEditorFormRow label="Number of images">
         <div class="flex items-center">
-            <wwEditorInput
-                class="w-50"
-                type="number"
-                min="1"
-                max="10"
-                :model-value="n"
-                @update:modelValue="setN"
-                bindable
-                small
-            />
+            <wwEditorInput type="number" min="1" max="10" :model-value="n" @update:modelValue="setN" bindable small />
             <wwEditorInputRange
                 v-if="!isNBound"
-                class="w-100 ml-2"
+                class="ml-2"
                 min="1"
                 max="10"
                 :model-value="n"
