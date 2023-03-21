@@ -51,7 +51,7 @@ export default {
         user,
     }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await openai.createChatCompletion({
+        return await this.instance.createChatCompletion({
             model,
             messages,
             messages,
@@ -86,7 +86,7 @@ export default {
         user,
     }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
-        return await openai.createCompletion({
+        return await this.instance.createCompletion({
             model,
             prompt,
             suffix,
