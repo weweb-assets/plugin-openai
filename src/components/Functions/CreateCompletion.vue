@@ -320,14 +320,6 @@ export default {
     emits: ['update:args'],
     data() {
         return {
-            modelOptions: [
-                { label: 'gpt-4', value: 'gpt-4' },
-                { label: 'gpt-4-0314', value: 'gpt-4-0314' },
-                { label: 'gpt-4-32k', value: 'gpt-4-32k' },
-                { label: 'gpt-4-32k-0314', value: 'gpt-4-32k-0314' },
-                { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
-                { label: 'ggpt-3.5-turbo-0301', value: 'ggpt-3.5-turbo-0301' },
-            ],
             questionMark: {
                 prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
@@ -368,6 +360,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         };
     },
     computed: {
+        modelOptions() {
+            return (this.plugins.models || []).map(model => ({ label: model.id, value: model.id }));
+        },
         model() {
             return this.args.model;
         },
