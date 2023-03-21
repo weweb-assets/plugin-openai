@@ -27,24 +27,16 @@
                 bindable
                 @update:modelValue="setItem({ ...item, role: $event })"
             />
-            <wwEditorFormRow label="Content">
-                <div class="flex items-center">
-                    <wwEditorInput
-                        type="query"
-                        :model-value="item.content"
-                        label="Content"
-                        placeholder="Enter a value"
-                        small
-                        bindable
-                        @update:modelValue="setItem({ ...item, content: $event })"
-                    />
-                    <wwEditorQuestionMark
-                        tooltip-position="top-left"
-                        class="ml-2"
-                        :forcedContent="questionMark.messages"
-                    />
-                </div>
-            </wwEditorFormRow>
+            <wwEditorInputRow
+                type="query"
+                :model-value="item.content"
+                label="Content"
+                placeholder="Enter a value"
+                small
+                bindable
+                @update:modelValue="setItem({ ...item, content: $event })"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.messages" />
         </template>
     </wwEditorInputRow>
     <wwEditorFormRow label="User">
@@ -233,26 +225,18 @@
                 bindable
                 @update:modelValue="setItem({ ...item, key: $event })"
             />
-            <wwEditorFormRow label="Bias value">
-                <div class="flex items-center">
-                    <wwEditorInput
-                        type="number"
-                        :model-value="item.value"
-                        label="Bias value"
-                        min="-100"
-                        max="100"
-                        placeholder="Enter a value"
-                        small
-                        bindable
-                        @update:modelValue="setItem({ ...item, value: $event })"
-                    />
-                    <wwEditorQuestionMark
-                        tooltip-position="top-left"
-                        class="ml-2"
-                        :forcedContent="questionMark.logit_bias"
-                    />
-                </div>
-            </wwEditorFormRow>
+            <wwEditorInputRow
+                type="number"
+                :model-value="item.value"
+                label="Bias value"
+                min="-100"
+                max="100"
+                placeholder="Enter a value"
+                small
+                bindable
+                @update:modelValue="setItem({ ...item, value: $event })"
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.logit_bias" />
         </template>
     </wwEditorInputRow>
     <wwEditorInputRow

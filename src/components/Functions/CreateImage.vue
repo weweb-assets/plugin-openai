@@ -13,6 +13,19 @@
             <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.prompt" />
         </div>
     </wwEditorFormRow>
+    <wwEditorFormRow label="User">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="User"
+                placeholder="Enter a unique identifier"
+                type="query"
+                :model-value="user"
+                @update:modelValue="setUser"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.user" />
+        </div>
+    </wwEditorFormRow>
     <wwEditorFormRow label="Number of images">
         <div class="flex items-center">
             <wwEditorInput type="number" min="1" max="10" :model-value="n" @update:modelValue="setN" bindable small />
@@ -25,19 +38,6 @@
                 @update:modelValue="setN"
             />
             <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.n" />
-        </div>
-    </wwEditorFormRow>
-    <wwEditorFormRow label="User">
-        <div class="flex items-center">
-            <wwEditorInput
-                label="User"
-                placeholder="Enter a unique identifier"
-                type="query"
-                :model-value="user"
-                @update:modelValue="setUser"
-                bindable
-            />
-            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.user" />
         </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Size">
