@@ -28,9 +28,9 @@
     />
     <wwEditorFormRow label="Number of edits">
         <div class="flex items-center">
-            <wwEditorInput type="number" min="1" max="100" :model-value="n" @update:modelValue="setN" bindable />
+            <wwEditorInput type="number" min="1" max="100" :model-value="n" @update:modelValue="setN" bindable small />
             <wwEditorInputRange
-                v-if="isNBound"
+                v-if="!isNBound"
                 class="ml-2"
                 min="1"
                 max="100"
@@ -49,9 +49,11 @@
                 :model-value="temperature"
                 @update:modelValue="setTemperature"
                 bindable
+                small
             />
             <wwEditorInputRange
                 v-if="!isTemperatureBound"
+                step="0.1"
                 min="0"
                 max="2"
                 :model-value="temperature"
@@ -93,7 +95,11 @@ export default {
             return typeof this.n === 'object';
         },
         temperature() {
-            return this.args.temperature || 1;
+            if (this.args.temperature === undefined) return 1;
+            return this.args.temperature;
+        },
+        isTemperatureBound() {
+            return typeof this.temperature === 'object';
         },
     },
     methods: {
