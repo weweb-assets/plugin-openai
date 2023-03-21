@@ -1,13 +1,18 @@
 <template>
-    <wwEditorInputRow
-        label="Prompt"
-        placeholder="Enter a value"
-        type="string"
-        required
-        :model-value="prompt"
-        @update:modelValue="setPrompt"
-        bindable
-    />
+    <wwEditorFormRow label="Prompt">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Prompt"
+                placeholder="Enter a value"
+                type="string"
+                required
+                :model-value="prompt"
+                @update:modelValue="setPrompt"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.prompt" />
+        </div>
+    </wwEditorFormRow>
     <wwEditorFormRow label="Number of images">
         <div class="flex items-center">
             <wwEditorInput type="number" min="1" max="10" :model-value="n" @update:modelValue="setN" bindable small />
@@ -19,34 +24,54 @@
                 :model-value="n"
                 @update:modelValue="setN"
             />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.n" />
         </div>
     </wwEditorFormRow>
-    <wwEditorInputRow
-        label="User"
-        placeholder="Enter a unique identifier"
-        type="query"
-        :model-value="user"
-        @update:modelValue="setUser"
-        bindable
-    />
-    <wwEditorInputRow
-        label="Size"
-        type="select"
-        :options="sizeOptions"
-        :model-value="size"
-        @update:modelValue="setSize"
-        bindable
-        small
-    />
-    <wwEditorInputRow
-        label="Response format"
-        type="select"
-        :options="formatOptions"
-        :model-value="format"
-        @update:modelValue="setFormat"
-        bindable
-        small
-    />
+    <wwEditorFormRow label="User">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="User"
+                placeholder="Enter a unique identifier"
+                type="query"
+                :model-value="user"
+                @update:modelValue="setUser"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.user" />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Size">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Size"
+                type="select"
+                :options="sizeOptions"
+                :model-value="size"
+                @update:modelValue="setSize"
+                bindable
+                small
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.size" />
+        </div>
+    </wwEditorFormRow>
+    <wwEditorFormRow label="Response format">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Response format"
+                type="select"
+                :options="formatOptions"
+                :model-value="format"
+                @update:modelValue="setFormat"
+                bindable
+                small
+            />
+            <wwEditorQuestionMark
+                tooltip-position="top-left"
+                class="ml-2"
+                :forcedContent="questionMark.response_format"
+            />
+        </div>
+    </wwEditorFormRow>
 </template>
 
 <script>
@@ -67,6 +92,13 @@ export default {
                 { label: 'URL', value: 'url', default: true },
                 { label: 'Base 64', value: 'b64_json' },
             ],
+            questionMark: {
+                user: 'A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. ',
+                response_format: 'The format in which the generated images are returned.',
+                size: 'The size of the generated images.',
+                n: 'The number of images to generate.',
+                prompt: 'A text description of the desired image(s). The maximum length is 1000 characters.',
+            },
         };
     },
     computed: {
