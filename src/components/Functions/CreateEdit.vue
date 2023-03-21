@@ -28,10 +28,19 @@
     />
     <wwEditorFormRow label="Number of edits">
         <div class="flex items-center">
-            <wwEditorInput type="number" min="1" max="100" :model-value="n" @update:modelValue="setN" bindable small />
+            <wwEditorInput
+                class="w-50"
+                type="number"
+                min="1"
+                max="100"
+                :model-value="n"
+                @update:modelValue="setN"
+                bindable
+                small
+            />
             <wwEditorInputRange
                 v-if="!isNBound"
-                class="ml-2"
+                class="w-100 ml-2"
                 min="1"
                 max="100"
                 :model-value="n"
@@ -43,6 +52,7 @@
         <div class="flex items-center">
             <wwEditorInput
                 type="number"
+                class="w-50"
                 min="0"
                 max="2"
                 step="0.1"
@@ -53,6 +63,7 @@
             />
             <wwEditorInputRange
                 v-if="!isTemperatureBound"
+                class="w-100 ml-2"
                 step="0.1"
                 min="0"
                 max="2"
