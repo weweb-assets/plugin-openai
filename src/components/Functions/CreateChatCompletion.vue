@@ -258,6 +258,7 @@
         <template #default="{ item, setItem }">
             <div class="flex items-center">
                 <wwEditorInputRow
+                    class="w-100"
                     placeholder="Enter a value"
                     type="query"
                     :model-value="item"

@@ -51,6 +51,8 @@ export default {
         user,
     }) {
         if (!this.instance) throw new Error('Invalid Supabase configuration.');
+        logit_bias = logit_bias.reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
+        if (!stop || !stop.length) stop = undefined;
         const { data } = await this.instance.createChatCompletion({
             model,
             messages,
