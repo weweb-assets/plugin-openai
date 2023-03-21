@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center body-2">
         <wwEditorIcon name="key" class="mr-2" />
-        <div class="text-ellipsis">{{ settings.privateData.apiKey }}</div>
+        <div class="text-ellipsis">{{ apiKey }}</div>
     </div>
 </template>
 

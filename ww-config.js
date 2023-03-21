@@ -30,14 +30,6 @@ export default {
             /* wwEditor:end */
         },
         {
-            name: 'Create edit',
-            code: 'createEdit',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/CreateEdit.vue'),
-            /* wwEditor:end */
-        },
-        {
             name: 'Create image',
             code: 'createImage',
             isAsync: true,
@@ -46,27 +38,11 @@ export default {
             /* wwEditor:end */
         },
         {
-            name: 'Create image edit',
-            code: 'createImageEdit',
+            name: 'Create edit',
+            code: 'createEdit',
             isAsync: true,
             /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
-            /* wwEditor:end */
-        },
-        {
-            name: 'Create image variation',
-            code: 'createImageVariation',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
-            /* wwEditor:end */
-        },
-        {
-            name: 'Create embeddings',
-            code: 'createEmbeddings',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/Test.vue'),
+            edit: () => import('./src/components/Functions/CreateEdit.vue'),
             /* wwEditor:end */
         },
     ],
