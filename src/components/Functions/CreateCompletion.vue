@@ -361,7 +361,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
     },
     computed: {
         modelOptions() {
-            return (this.plugins.models || []).map(model => ({ label: model.id, value: model.id }));
+            return (this.plugin.models || []).map(model => ({ label: model.id, value: model.id }));
         },
         model() {
             return this.args.model;
