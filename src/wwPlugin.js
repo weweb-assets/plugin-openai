@@ -41,20 +41,25 @@ export default {
             logit_bias,
             user,
         };
-        let response = null;
-        /* wwEditor:start */
-        response = await wwAxios.post(
-            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
-            { data }
-        );
-        /* wwEditor:end */
-        /* wwFront:start */
-        response = await axios.post(
-            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-            { data }
-        );
-        /* wwFront:end */
-        return response.data.data;
+        try {
+            let response = null;
+            /* wwEditor:start */
+            response = await wwAxios.post(
+                `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
+                { data }
+            );
+            /* wwEditor:end */
+            /* wwFront:start */
+            response = await axios.post(
+                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
+                { data }
+            );
+            /* wwFront:end */
+            return response.data.data;
+        } catch (err) {
+            if (err.response && err.response.data) throw new Error(err.response.data);
+            else throw err;
+        }
     },
     async createCompletion({
         model,
@@ -93,50 +98,70 @@ export default {
             logit_bias,
             user,
         };
-        let response = null;
-        /* wwEditor:start */
-        response = await wwAxios.post(
-            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
-            { data }
-        );
-        /* wwEditor:end */
-        /* wwFront:start */
-        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`, {
-            data,
-        });
-        /* wwFront:end */
-        return response.data.data;
+        try {
+            let response = null;
+            /* wwEditor:start */
+            response = await wwAxios.post(
+                `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
+                { data }
+            );
+            /* wwEditor:end */
+            /* wwFront:start */
+            response = await axios.post(
+                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`,
+                {
+                    data,
+                }
+            );
+            /* wwFront:end */
+            return response.data.data;
+        } catch (err) {
+            if (err.response && err.response.data) throw new Error(err.response.data);
+            else throw err;
+        }
     },
     async createEdit({ model, input = '', instruction, n = 1, temperature = 1, top_p = 1 }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         const data = { model, input, instruction, n, temperature, top_p };
-        let response = null;
-        /* wwEditor:start */
-        response = await wwAxios.post(`${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/edits`, {
-            data,
-        });
-        /* wwEditor:end */
-        /* wwFront:start */
-        response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, { data });
-        /* wwFront:end */
-        return response.data.data;
+        try {
+            let response = null;
+            /* wwEditor:start */
+            response = await wwAxios.post(`${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/edits`, {
+                data,
+            });
+            /* wwEditor:end */
+            /* wwFront:start */
+            response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, {
+                data,
+            });
+            /* wwFront:end */
+            return response.data.data;
+        } catch (err) {
+            if (err.response && err.response.data) throw new Error(err.response.data);
+            else throw err;
+        }
     },
     async createImage({ prompt, n = 1, size = '1024x1024', response_format = 'url', user }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         const data = { prompt, n, size, response_format, user };
-        let response = null;
-        /* wwEditor:start */
-        response = await wwAxios.post(
-            `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/images/generations`,
-            { data }
-        );
-        /* wwEditor:end */
-        /* wwFront:start */
-        response = await axios.post(
-            `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/images/generations`,
-            { data }
-        );
-        /* wwFront:end */
-        return response.data.data;
+        try {
+            let response = null;
+            /* wwEditor:start */
+            response = await wwAxios.post(
+                `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/images/generations`,
+                { data }
+            );
+            /* wwEditor:end */
+            /* wwFront:start */
+            response = await axios.post(
+                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/images/generations`,
+                { data }
+            );
+            /* wwFront:end */
+            return response.data.data;
+        } catch (err) {
+            if (err.response && err.response.data) throw new Error(err.response.data);
+            else throw err;
+        }
     },
 };
