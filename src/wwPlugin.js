@@ -120,7 +120,7 @@ export default {
             else throw err;
         }
     },
-    async createEdit({ model, input = '', instruction, n = 1, temperature = 1, top_p = 1 }) {
+    async createEdit({ model, input, instruction, n, temperature, top_p }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         const data = { model, input, instruction, n, temperature, top_p };
         try {
@@ -141,8 +141,10 @@ export default {
             else throw err;
         }
     },
-    async createImage({ prompt, n = 1, size = '1024x1024', response_format = 'url', user }) {
+    async createImage({ prompt, n, size = '1024x1024', response_format = 'url', user }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
+        if (!size) size = '1024x1024';
+        if (!response_format) response_format = 'url';
         const data = { prompt, n, size, response_format, user };
         try {
             let response = null;
