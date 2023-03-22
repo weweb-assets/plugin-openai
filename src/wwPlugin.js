@@ -25,7 +25,7 @@ export default {
         user,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
-        logit_bias = logit_bias.reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
+        logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
         const data = {
             model,
@@ -74,7 +74,7 @@ export default {
         user,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
-        logit_bias = logit_bias.reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
+        logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
         const data = {
             model,
