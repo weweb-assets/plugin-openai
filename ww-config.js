@@ -16,7 +16,7 @@ export default {
                 edit: () => import('./src/components/Completions/SettingsEdit.vue'),
                 summary: () => import('./src/components/Completions/SettingsSummary.vue'),
                 getIsValid(settings) {
-                    return true;
+                    return (settings.privateData.completionsPrompts || []).every(item => item.title && item.content);
                 },
             },
             {
@@ -25,7 +25,9 @@ export default {
                 edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
                 summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
                 getIsValid(settings) {
-                    return true;
+                    return (settings.privateData.chatCompletionsPrompts || []).every(
+                        item => item.title && item.content
+                    );
                 },
             },
         ],

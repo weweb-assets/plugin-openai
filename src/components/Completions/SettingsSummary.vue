@@ -1,7 +1,11 @@
 <template>
-    <div class="flex items-center body-2">
-        <wwEditorIcon name="key" class="mr-2" />
-        <div class="text-ellipsis">{{ apiKey }}</div>
+    <div class="flex items-center body-2" v-for="(completionsPrompt, index) of completionsPrompts" :key="index">
+        <wwEditorIcon name="minu-sm" class="mr-2" :class="{ 'mt-1': !!index }" />
+        <div class="text-ellipsis">{{ completionsPrompt.title }}</div>
+    </div>
+    <div class="flex items-center body-2" v-if="!completionsPrompt.length">
+        <wwEditorIcon name="minu-sm" class="mr-2" />
+        <div class="text-ellipsis">No prompt defined.</div>
     </div>
 </template>
 
@@ -11,8 +15,8 @@ export default {
         settings: { type: Object, required: true },
     },
     computed: {
-        apiKey() {
-            return (this.settings.privateData.apiKey || '').replace(/./g, '*');
+        completionsPrompts() {
+            return this.settings.privateData.completionsPrompts || [];
         },
     },
 };
