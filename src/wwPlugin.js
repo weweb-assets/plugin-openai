@@ -27,6 +27,7 @@ export default {
         frequency_penalty,
         logit_bias,
         user,
+        systemMessage,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -44,6 +45,7 @@ export default {
             frequency_penalty,
             logit_bias,
             user,
+            systemMessage,
         };
         try {
             let response = null;
@@ -81,6 +83,8 @@ export default {
         best_of,
         logit_bias,
         user,
+        systemPrompt,
+        systemPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -101,6 +105,8 @@ export default {
             best_of,
             logit_bias,
             user,
+            systemPrompt,
+            systemPromptVariables,
         };
         try {
             let response = null;

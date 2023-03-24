@@ -432,6 +432,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         systemPrompt() {
             return this.args.systemPrompt;
         },
+        systemPromptVariables() {
+            return this.args.systemPromptVariables || [];
+        },
         prompt() {
             return this.args.prompt;
         },
@@ -510,6 +513,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         },
         setSystemPrompt(systemPrompt) {
             this.$emit('update:args', { ...this.args, systemPrompt });
+        },
+        setSystemPromptVariables(systemPromptVariables) {
+            this.$emit('update:args', { ...this.args, systemPromptVariables });
         },
         setPrompt(prompt) {
             this.$emit('update:args', { ...this.args, prompt });
