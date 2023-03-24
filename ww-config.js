@@ -15,12 +15,18 @@ export default {
                 icon: 'advanced',
                 edit: () => import('./src/components/Completions/SettingsEdit.vue'),
                 summary: () => import('./src/components/Completions/SettingsSummary.vue'),
+                getIsValid(settings) {
+                    return true;
+                },
             },
             {
                 label: 'Chat Completion system messages',
                 icon: 'advanced',
                 edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
                 summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
+                getIsValid(settings) {
+                    return true;
+                },
             },
         ],
     },

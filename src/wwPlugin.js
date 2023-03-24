@@ -1,6 +1,10 @@
 /* wwEditor:start */
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
+import './components/Completions/SettingsEdit.vue';
+import './components/Completions/SettingsSummary.vue';
+import './components/ChatCompletions/SettingsEdit.vue';
+import './components/ChatCompletions/SettingsSummary.vue';
 import './components/Functions/CreateCompletion.vue';
 import './components/Functions/CreateChatCompletion.vue';
 import './components/Functions/CreateImage.vue';
