@@ -4,7 +4,7 @@
         type="array"
         :model-value="chatCompletionsPrompts"
         @update:modelValue="setChatCompletionsPrompts"
-        @add-item="setChatCompletionsPrompts([...chatCompletionsPrompts, {}])"
+        @add-item="setChatCompletionsPrompts([...chatCompletionsPrompts, getNewItem()])"
     >
         <template #default="{ item, index, setItem }">
             <div class="flex flex-col" :class="{ 'border-top-stale-100 pt-3': !!index }">
@@ -48,6 +48,9 @@ export default {
                 ...this.settings,
                 privateData: { ...this.settings.privateData, chatCompletionsPrompts },
             });
+        },
+        getNewItem() {
+            return { id: wwLib.wwUtils.getUid() };
         },
     },
 };
