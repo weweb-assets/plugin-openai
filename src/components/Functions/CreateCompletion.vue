@@ -21,36 +21,18 @@
             :model-value="systemPrompt"
             @update:modelValue="setSystemPrompt"
         />
-        <wwEditorInputRow
-            v-if="systemPrompt"
-            label="System prompt variables"
-            type="array"
-            :model-value="systemPromptVariables"
-            bindable
-            @update:modelValue="setSystemPromptVariables"
-            @add-item="setSystemPromptVariables([...systemPromptVariables, {}])"
-        >
-            <template #default="{ item, setItem }">
-                <wwEditorInputRow
-                    type="select"
-                    :model-value="item.key"
-                    label="Variable"
-                    placeholder="Select a variable"
-                    :options="variablesOptions"
-                    small
-                    @update:modelValue="setItem({ ...item, key: $event })"
-                />
-                <wwEditorInputRow
-                    type="query"
-                    :model-value="item.value"
-                    label="Value"
-                    placeholder="Enter a value"
-                    small
-                    bindable
-                    @update:modelValue="setItem({ ...item, value: $event })"
-                />
-            </template>
-        </wwEditorInputRow>
+        <template v-if="systemPrompt">
+            <wwEditorInputRow
+                v-for="(variable, index) in variablesOptions"
+                :key="index"
+                type="query"
+                :model-value="systemPromptVariables[variable.value]"
+                :label="variable.value"
+                placeholder="Enter a value"
+                bindable
+                @update:modelValue="setSystemPromptVariables({ ...systemPromptVariables, value: $event })"
+            />
+        </template>
     </template>
     <wwEditorFormRow v-else label="Prompt">
         <div class="flex items-center">
@@ -446,7 +428,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
             return this.args.systemPrompt;
         },
         systemPromptVariables() {
-            return this.args.systemPromptVariables || [];
+            return this.args.systemPromptVariables || {};
         },
         prompt() {
             return this.args.prompt;
