@@ -8,6 +8,44 @@
         @update:modelValue="setModel"
         required
     />
+    <wwEditorInputRow
+        label="System prompt"
+        placeholder="Select a system prompt"
+        type="select"
+        :options="systemPromptOptions"
+        :model-value="systemPrompt"
+        @update:modelValue="setSystemPrompt"
+    />
+    <wwEditorInputRow
+        v-if="systemPrompt"
+        label="System prompt variables"
+        type="array"
+        :model-value="systemPromptVariables"
+        bindable
+        @update:modelValue="setSystemPromptVariables"
+        @add-item="setSystemPromptVariables([...systemPromptVariables, {}])"
+    >
+        <template #default="{ item, setItem }">
+            <wwEditorInputRow
+                type="select"
+                :model-value="item.key"
+                label="Variable"
+                placeholder="Select a variable"
+                :options="variablesOptions"
+                small
+                @update:modelValue="setItem({ ...item, key: $event })"
+            />
+            <wwEditorInputRow
+                type="query"
+                :model-value="item.value"
+                label="Value"
+                placeholder="Enter a value"
+                small
+                bindable
+                @update:modelValue="setItem({ ...item, value: $event })"
+            />
+        </template>
+    </wwEditorInputRow>
     <wwEditorFormRow label="Prompt">
         <div class="flex items-center">
             <wwEditorInput
@@ -371,8 +409,28 @@ Note: Because this parameter generates many completions, it can quickly consume 
         };
     },
     computed: {
+        systemPromptOptions() {
+            return (this.plugin.settings.privateData.completionsPrompts || []).map(item => ({
+                label: item.title,
+                value: item.id,
+            }));
+        },
+        variablesOptions() {
+            if (!this.systemPrompt) return [];
+            const systemPrompt = (this.plugin.settings.privateData.completionsPrompts || []).find(
+                item => item.id === this.systemPrompt
+            );
+            if (!systemPrompt) return [];
+            return (systemPrompt.content || '')
+                .match(/{\w+}/g)
+                .map(item => item.replace(/{|}/g, ''))
+                .map(item => ({ label: item, value: item }));
+        },
         model() {
             return this.args.model;
+        },
+        systemPrompt() {
+            return this.args.systemPrompt;
         },
         prompt() {
             return this.args.prompt;
@@ -449,6 +507,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
     methods: {
         setModel(model) {
             this.$emit('update:args', { ...this.args, model });
+        },
+        setSystemPrompt(systemPrompt) {
+            this.$emit('update:args', { ...this.args, systemPrompt });
         },
         setPrompt(prompt) {
             this.$emit('update:args', { ...this.args, prompt });
