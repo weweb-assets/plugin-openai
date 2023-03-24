@@ -2,9 +2,9 @@
     <wwEditorInputRow
         label="System prompts"
         type="array"
-        :model-value="chatCompletionsPrompts"
-        @update:modelValue="setChatCompletionsPrompts"
-        @add-item="setChatCompletionsPrompts([...chatCompletionsPrompts, getNewItem()])"
+        :model-value="chatCompletionsMessages"
+        @update:modelValue="setChatCompletionsMessages"
+        @add-item="setChatCompletionsMessages([...chatCompletionsMessages, getNewItem()])"
     >
         <template #default="{ item, index, setItem }">
             <div class="flex flex-col" :class="{ 'border-top-stale-100 pt-3': !!index }">
@@ -38,15 +38,15 @@ export default {
     },
     emits: ['update:settings'],
     computed: {
-        chatCompletionsPrompts() {
-            return this.settings.privateData.chatCompletionsPrompts || [];
+        chatCompletionsMessages() {
+            return this.settings.privateData.chatCompletionsMessages || [];
         },
     },
     methods: {
-        setChatCompletionsPrompts(chatCompletionsPrompts) {
+        setChatCompletionsMessages(chatCompletionsMessages) {
             this.$emit('update:settings', {
                 ...this.settings,
-                privateData: { ...this.settings.privateData, chatCompletionsPrompts },
+                privateData: { ...this.settings.privateData, chatCompletionsMessages },
             });
         },
         getNewItem() {

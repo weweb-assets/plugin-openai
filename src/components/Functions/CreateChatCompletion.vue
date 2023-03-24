@@ -327,7 +327,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
     computed: {
         systemMessageOptions() {
-            return (this.plugin.settings.privateData.chatCompletionsPrompts || []).map(item => ({
+            return (this.plugin.settings.privateData.chatCompletionsMessages || []).map(item => ({
                 label: item.title,
                 value: item.id,
             }));
