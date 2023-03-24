@@ -10,6 +10,18 @@ export default {
                     return !!settings.privateData.apiKey;
                 },
             },
+            {
+                label: 'Completion system prompt',
+                icon: 'advanced',
+                edit: () => import('./src/components/Completions/SettingsEdit.vue'),
+                summary: () => import('./src/components/Completions/SettingsSummary.vue'),
+            },
+            {
+                label: 'Chat Completion system messages',
+                icon: 'advanced',
+                edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
+                summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
+            },
         ],
     },
     actions: [
