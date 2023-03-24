@@ -8,45 +8,50 @@
         @update:modelValue="setModel"
         required
     />
-    <wwEditorInputRow
-        label="System prompt"
-        placeholder="Select a system prompt"
-        type="select"
-        :options="systemPromptOptions"
-        :model-value="systemPrompt"
-        @update:modelValue="setSystemPrompt"
-    />
-    <wwEditorInputRow
-        v-if="systemPrompt"
-        label="System prompt variables"
-        type="array"
-        :model-value="systemPromptVariables"
-        bindable
-        @update:modelValue="setSystemPromptVariables"
-        @add-item="setSystemPromptVariables([...systemPromptVariables, {}])"
-    >
-        <template #default="{ item, setItem }">
-            <wwEditorInputRow
-                type="select"
-                :model-value="item.key"
-                label="Variable"
-                placeholder="Select a variable"
-                :options="variablesOptions"
-                small
-                @update:modelValue="setItem({ ...item, key: $event })"
-            />
-            <wwEditorInputRow
-                type="query"
-                :model-value="item.value"
-                label="Value"
-                placeholder="Enter a value"
-                small
-                bindable
-                @update:modelValue="setItem({ ...item, value: $event })"
-            />
-        </template>
-    </wwEditorInputRow>
-    <wwEditorFormRow label="Prompt">
+    <wwEditorFormRow>
+        <wwEditorInputRadio :choices="promptTypeChoices" :model-value="promptType" @update:modelValue="setPromptType" />
+    </wwEditorFormRow>
+    <template v-if="promptType === 'system-prompt'">
+        <wwEditorInputRow
+            label="System prompt"
+            placeholder="Select a system prompt"
+            type="select"
+            :options="systemPromptOptions"
+            :model-value="systemPrompt"
+            @update:modelValue="setSystemPrompt"
+        />
+        <wwEditorInputRow
+            v-if="systemPrompt"
+            label="System prompt variables"
+            type="array"
+            :model-value="systemPromptVariables"
+            bindable
+            @update:modelValue="setSystemPromptVariables"
+            @add-item="setSystemPromptVariables([...systemPromptVariables, {}])"
+        >
+            <template #default="{ item, setItem }">
+                <wwEditorInputRow
+                    type="select"
+                    :model-value="item.key"
+                    label="Variable"
+                    placeholder="Select a variable"
+                    :options="variablesOptions"
+                    small
+                    @update:modelValue="setItem({ ...item, key: $event })"
+                />
+                <wwEditorInputRow
+                    type="query"
+                    :model-value="item.value"
+                    label="Value"
+                    placeholder="Enter a value"
+                    small
+                    bindable
+                    @update:modelValue="setItem({ ...item, value: $event })"
+                />
+            </template>
+        </wwEditorInputRow>
+    </template>
+    <wwEditorFormRow v-else label="Prompt">
         <div class="flex items-center">
             <wwEditorInput
                 label="Prompt"
@@ -369,6 +374,10 @@ export default {
                 { label: 'babbage', value: 'babbage' },
                 { label: 'ada', value: 'ada' },
             ],
+            promptTypeChoices: [
+                { label: 'Prompt', value: 'prompt', default: true },
+                { label: 'System prompt', value: 'system-prompt' },
+            ],
             questionMark: {
                 prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
@@ -428,6 +437,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         },
         model() {
             return this.args.model;
+        },
+        promptType() {
+            return this.args.promptType || 'prompt';
         },
         systemPrompt() {
             return this.args.systemPrompt;
@@ -510,6 +522,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
     methods: {
         setModel(model) {
             this.$emit('update:args', { ...this.args, model });
+        },
+        setPromptType(promptType) {
+            this.$emit('update:args', { ...this.args, promptType });
         },
         setSystemPrompt(systemPrompt) {
             this.$emit('update:args', { ...this.args, systemPrompt });
