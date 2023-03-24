@@ -1,24 +1,33 @@
 <template>
-    <wwEditorFormRow required label="API key">
-        <template #append-label>
-            <a class="ww-editor-link ml-2" href="https://platform.openai.com/account/api-keys" target="_blank">
-                Find it here
-            </a>
+    <wwEditorInputRow
+        label="System prompts"
+        type="array"
+        :model-value="chatCompletionsPrompts"
+        @update:modelValue="setChatCompletionsPrompts"
+        @add-item="setChatCompletionsPrompts([...chatCompletionsPrompts, {}])"
+    >
+        <template #default="{ item, index, setItem }">
+            <div class="flex flex-col" :class="{ 'border-top-stale-100 pt-3': !!index }">
+                <wwEditorInputRow
+                    type="query"
+                    :model-value="item.title"
+                    label="Title"
+                    placeholder="Enter the title of the prompt"
+                    small
+                    required
+                    @update:modelValue="setItem({ ...item, title: $event })"
+                />
+                <wwEditorInputRow
+                    type="string"
+                    :model-value="item.content"
+                    label="Content"
+                    placeholder="Enter your system prompt"
+                    required
+                    @update:modelValue="setItem({ ...item, content: $event })"
+                />
+            </div>
         </template>
-        <div class="flex items-center">
-            <wwEditorInputText
-                :type="isKeyVisible ? 'text' : 'password'"
-                name="api-key"
-                placeholder="**************"
-                :model-value="settings.privateData.apiKey"
-                @update:modelValue="changeApiKey"
-                class="w-100 mr-2"
-            />
-            <button class="ww-editor-button -icon -secondary -dark" @click.prevent="isKeyVisible = !isKeyVisible">
-                <wwEditorIcon :name="isKeyVisible ? 'eye-off' : 'eye'"></wwEditorIcon>
-            </button>
-        </div>
-    </wwEditorFormRow>
+    </wwEditorInputRow>
 </template>
 
 <script>
@@ -28,16 +37,16 @@ export default {
         settings: { type: Object, required: true },
     },
     emits: ['update:settings'],
-    data() {
-        return {
-            isKeyVisible: false,
-        };
+    computed: {
+        chatCompletionsPrompts() {
+            return this.settings.privateData.chatCompletionsPrompts || [];
+        },
     },
     methods: {
-        changeApiKey(apiKey) {
+        setChatCompletionsPrompts(chatCompletionsPrompts) {
             this.$emit('update:settings', {
                 ...this.settings,
-                privateData: { ...this.settings.privateData, apiKey },
+                privateData: { ...this.settings.privateData, chatCompletionsPrompts },
             });
         },
     },

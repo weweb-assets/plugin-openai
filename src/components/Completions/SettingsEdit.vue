@@ -3,12 +3,11 @@
         label="System prompts"
         type="array"
         :model-value="completionsPrompts"
-        bindable
         @update:modelValue="setCompletionsPrompts"
         @add-item="setCompletionsPrompts([...completionsPrompts, {}])"
     >
         <template #default="{ item, index, setItem }">
-            <div class="flex flex-col" :class="{ 'border-top-stale-100': !!index }">
+            <div class="flex flex-col" :class="{ 'border-top-stale-100 pt-3': !!index }">
                 <wwEditorInputRow
                     type="query"
                     :model-value="item.title"
@@ -38,9 +37,6 @@ export default {
         settings: { type: Object, required: true },
     },
     emits: ['update:settings'],
-    data() {
-        return {};
-    },
     computed: {
         completionsPrompts() {
             return this.settings.privateData.completionsPrompts || [];
