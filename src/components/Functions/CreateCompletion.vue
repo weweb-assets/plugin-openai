@@ -30,7 +30,7 @@
                 :label="variable.value"
                 placeholder="Enter a value"
                 bindable
-                @update:modelValue="setSystemPromptVariables({ ...systemPromptVariables, value: $event })"
+                @update:modelValue="setSystemPromptVariables({ ...systemPromptVariables, [variable.value]: $event })"
             />
         </template>
     </template>
