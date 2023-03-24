@@ -16,6 +16,7 @@
             label="System prompt"
             placeholder="Select a system prompt"
             type="select"
+            required
             :options="systemPromptOptions"
             :model-value="systemPrompt"
             @update:modelValue="setSystemPrompt"

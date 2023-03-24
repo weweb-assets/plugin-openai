@@ -83,6 +83,7 @@ export default {
         best_of,
         logit_bias,
         user,
+        promptType,
         systemPrompt,
         systemPromptVariables,
     }) {
@@ -105,6 +106,7 @@ export default {
             best_of,
             logit_bias,
             user,
+            promptType,
             systemPrompt,
             systemPromptVariables,
         };
