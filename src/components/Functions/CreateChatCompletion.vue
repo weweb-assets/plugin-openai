@@ -9,6 +9,14 @@
         required
     />
     <wwEditorInputRow
+        label="System message"
+        placeholder="Select a system message"
+        type="select"
+        :options="systemMessageOptions"
+        :model-value="systemMessage"
+        @update:modelValue="setSystemMessage"
+    />
+    <wwEditorInputRow
         label="Messages"
         type="array"
         :model-value="messages"
@@ -318,8 +326,17 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         };
     },
     computed: {
+        systemMessageOptions() {
+            return (this.plugin.settings.privateData.chatCompletionsPrompts || []).map(item => ({
+                label: item.title,
+                value: item.id,
+            }));
+        },
         model() {
             return this.args.model;
+        },
+        systemMessage() {
+            return this.args.systemMessage;
         },
         messages() {
             return this.args.messages || [];
@@ -379,6 +396,9 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     methods: {
         setModel(model) {
             this.$emit('update:args', { ...this.args, model });
+        },
+        setSystemMessage(systemMessage) {
+            this.$emit('update:args', { ...this.args, systemMessage });
         },
         setMessages(messages) {
             this.$emit('update:args', { ...this.args, messages });
