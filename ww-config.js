@@ -10,6 +10,26 @@ export default {
                     return !!settings.privateData.apiKey;
                 },
             },
+            {
+                label: 'Completion system prompt',
+                icon: 'advanced',
+                edit: () => import('./src/components/Completions/SettingsEdit.vue'),
+                summary: () => import('./src/components/Completions/SettingsSummary.vue'),
+                getIsValid(settings) {
+                    return (settings.privateData.completionsPrompts || []).every(item => item.title && item.content);
+                },
+            },
+            {
+                label: 'Chat Completion system messages',
+                icon: 'advanced',
+                edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
+                summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
+                getIsValid(settings) {
+                    return (settings.privateData.chatCompletionsMessages || []).every(
+                        item => item.title && item.content
+                    );
+                },
+            },
         ],
     },
     actions: [

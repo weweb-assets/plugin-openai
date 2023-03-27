@@ -1,6 +1,10 @@
 /* wwEditor:start */
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
+import './components/Completions/SettingsEdit.vue';
+import './components/Completions/SettingsSummary.vue';
+import './components/ChatCompletions/SettingsEdit.vue';
+import './components/ChatCompletions/SettingsSummary.vue';
 import './components/Functions/CreateCompletion.vue';
 import './components/Functions/CreateChatCompletion.vue';
 import './components/Functions/CreateImage.vue';
@@ -23,6 +27,7 @@ export default {
         frequency_penalty,
         logit_bias,
         user,
+        systemMessage,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -40,6 +45,7 @@ export default {
             frequency_penalty,
             logit_bias,
             user,
+            systemMessage,
         };
         try {
             let response = null;
@@ -77,6 +83,9 @@ export default {
         best_of,
         logit_bias,
         user,
+        promptType,
+        systemPrompt,
+        systemPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -97,6 +106,9 @@ export default {
             best_of,
             logit_bias,
             user,
+            promptType,
+            systemPrompt,
+            systemPromptVariables,
         };
         try {
             let response = null;
