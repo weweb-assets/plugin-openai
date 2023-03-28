@@ -17,7 +17,7 @@
                     required
                     @update:modelValue="setItem({ ...item, title: $event })"
                 />
-                <wwEditorInputRow label="Content" required>
+                <wwEditorFormRow label="Content" required>
                     <template #append-label>
                         <button
                             class="ww-editor-button -secondary -dark -small ml-2"
@@ -34,7 +34,7 @@
                         required
                         @update:modelValue="setItem({ ...item, content: $event })"
                     />
-                </wwEditorInputRow>
+                </wwEditorFormRow>
             </div>
         </template>
     </wwEditorInputRow>
