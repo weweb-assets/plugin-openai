@@ -20,11 +20,14 @@
                 <wwEditorFormRow label="Content" required>
                     <template #append-label>
                         <button
-                            class="ww-editor-button -secondary -dark -small ml-2"
+                            type="button"
+                            class="ww-editor-button -secondary -dark -small -no-padding ml-2"
                             @click="addVariable(item, setItem)"
                         >
-                            <wwEditorIcon class="ww-editor-button-icon -left" name="plus" small />
-                            Add variable
+                            <div class="flex items-center py-0 px-1">
+                                <wwEditorIcon class="ww-editor-button-icon -left" name="plus" small />
+                                Add variable
+                            </div>
                         </button>
                     </template>
                     <wwEditorInput
@@ -63,7 +66,13 @@ export default {
             return { id: wwLib.wwUtils.getUid() };
         },
         addVariable(item, setItem) {
-            setItem(item + '{{var}}');
+            const number = Math.max(
+                ...((item.content || '').match(/{{var\d+}}/g) || [])
+                    .map(item => item.replace(/{{var(\d+)}}/g, '$1'))
+                    .map(item => parseInt(item)),
+                0
+            );
+            setItem({ ...item, content: item.content + `{{var${number + 1}}}` });
         },
     },
 };
