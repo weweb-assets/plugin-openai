@@ -8,33 +8,16 @@
         @update:modelValue="setModel"
         required
     />
-    <wwEditorFormRow>
-        <wwEditorInputRadio :choices="promptTypeChoices" :model-value="promptType" @update:modelValue="setPromptType" />
-    </wwEditorFormRow>
-    <template v-if="promptType === 'system-prompt'">
-        <wwEditorInputRow
-            label="System prompt"
-            placeholder="Select a system prompt"
-            type="select"
-            required
-            :options="systemPromptOptions"
-            :model-value="systemPrompt"
-            @update:modelValue="setSystemPrompt"
-        />
-        <template v-if="systemPrompt">
-            <wwEditorInputRow
-                v-for="(variable, index) in variablesOptions"
-                :key="index"
-                type="query"
-                :model-value="systemPromptVariables[variable.value]"
-                :label="variable.value"
-                placeholder="Enter a value"
-                bindable
-                @update:modelValue="setSystemPromptVariables({ ...systemPromptVariables, [variable.value]: $event })"
-            />
-        </template>
-    </template>
-    <wwEditorFormRow v-else label="Prompt">
+    <wwEditorInputRow
+        label="Secured prompt"
+        placeholder="Select a secured prompt"
+        type="select"
+        required
+        :options="securedPromptOptions"
+        :model-value="securedPrompt"
+        @update:modelValue="setSecuredPrompt"
+    />
+    <wwEditorFormRow v-if="securedPrompt === 'custom'" label="Prompt">
         <div class="flex items-center">
             <wwEditorInput
                 label="Prompt"
@@ -47,6 +30,19 @@
             <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.prompt" />
         </div>
     </wwEditorFormRow>
+    <template v-else>
+        <wwEditorInputRow
+            v-for="(variable, index) in variablesOptions"
+            :key="index"
+            type="query"
+            :model-value="securedPromptVariables[variable.value]"
+            :label="variable.value"
+            placeholder="Enter a value"
+            bindable
+            required
+            @update:modelValue="setSecuredPromptVariables({ ...securedPromptVariables, [variable.value]: $event })"
+        />
+    </template>
     <wwEditorFormRow label="Suffix">
         <div class="flex items-center">
             <wwEditorInput
@@ -357,10 +353,6 @@ export default {
                 { label: 'babbage', value: 'babbage' },
                 { label: 'ada', value: 'ada' },
             ],
-            promptTypeChoices: [
-                { label: 'Prompt', value: 'prompt', default: true },
-                { label: 'System prompt', value: 'system-prompt' },
-            ],
             questionMark: {
                 prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
@@ -401,34 +393,34 @@ Note: Because this parameter generates many completions, it can quickly consume 
         };
     },
     computed: {
-        systemPromptOptions() {
-            return (this.plugin.settings.privateData.completionsPrompts || []).map(item => ({
-                label: item.title,
-                value: item.id,
-            }));
+        securedPromptOptions() {
+            return [
+                ...(this.plugin.settings.privateData.completionsPrompts || []).map(item => ({
+                    label: item.title,
+                    value: item.id,
+                })),
+                { label: 'Custom', value: 'custom' },
+            ];
         },
         variablesOptions() {
-            if (!this.systemPrompt) return [];
-            const systemPrompt = (this.plugin.settings.privateData.completionsPrompts || []).find(
-                item => item.id === this.systemPrompt
+            if (!this.securedPrompt) return [];
+            const securedPrompt = (this.plugin.settings.privateData.securedPrompts || []).find(
+                item => item.id === this.securedPrompt
             );
-            if (!systemPrompt) return [];
-            return (systemPrompt.content || '')
-                .match(/{\w+}/g)
-                .map(item => item.replace(/{|}/g, ''))
+            if (!securedPrompt) return [];
+            return (securedPrompt.content || '')
+                .match(/{{\w+}}/g)
+                .map(item => item.replace(/{{|}}/g, ''))
                 .map(item => ({ label: item, value: item }));
         },
         model() {
             return this.args.model;
         },
-        promptType() {
-            return this.args.promptType || 'prompt';
+        securedPrompt() {
+            return this.args.securedPrompt;
         },
-        systemPrompt() {
-            return this.args.systemPrompt;
-        },
-        systemPromptVariables() {
-            return this.args.systemPromptVariables || {};
+        securedPromptVariables() {
+            return this.args.securedPromptVariables || {};
         },
         prompt() {
             return this.args.prompt;
@@ -509,11 +501,11 @@ Note: Because this parameter generates many completions, it can quickly consume 
         setPromptType(promptType) {
             this.$emit('update:args', { ...this.args, promptType });
         },
-        setSystemPrompt(systemPrompt) {
-            this.$emit('update:args', { ...this.args, systemPrompt });
+        setSecuredPrompt(securedPrompt) {
+            this.$emit('update:args', { ...this.args, securedPrompt });
         },
-        setSystemPromptVariables(systemPromptVariables) {
-            this.$emit('update:args', { ...this.args, systemPromptVariables });
+        setSecuredPromptVariables(securedPromptVariables) {
+            this.$emit('update:args', { ...this.args, securedPromptVariables });
         },
         setPrompt(prompt) {
             this.$emit('update:args', { ...this.args, prompt });
