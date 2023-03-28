@@ -19,7 +19,10 @@
                 />
                 <wwEditorInputRow label="Content" required>
                     <template #append-label>
-                        <button class="ww-editor-button -secondary -dark -small" @click="addVariable(item, setItem)">
+                        <button
+                            class="ww-editor-button -secondary -dark -small ml-2"
+                            @click="addVariable(item, setItem)"
+                        >
                             <wwEditorIcon class="ww-editor-button-icon -left" name="plus" small />
                             Add variable
                         </button>
