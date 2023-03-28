@@ -11,23 +11,12 @@ export default {
                 },
             },
             {
-                label: 'Completion system prompt',
-                icon: 'advanced',
-                edit: () => import('./src/components/Completions/SettingsEdit.vue'),
-                summary: () => import('./src/components/Completions/SettingsSummary.vue'),
+                label: 'Secured prompts',
+                icon: 'auth',
+                edit: () => import('./src/components/SecuredPrompts/SettingsEdit.vue'),
+                summary: () => import('./src/components/SecuredPrompts/SettingsSummary.vue'),
                 getIsValid(settings) {
-                    return (settings.privateData.completionsPrompts || []).every(item => item.title && item.content);
-                },
-            },
-            {
-                label: 'Chat Completion system messages',
-                icon: 'advanced',
-                edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
-                summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
-                getIsValid(settings) {
-                    return (settings.privateData.chatCompletionsMessages || []).every(
-                        item => item.title && item.content
-                    );
+                    return (settings.privateData.securedPrompts || []).every(item => item.title && item.content);
                 },
             },
         ],
@@ -57,13 +46,13 @@ export default {
             edit: () => import('./src/components/Functions/CreateImage.vue'),
             /* wwEditor:end */
         },
-        {
-            name: 'Create edit',
-            code: 'createEdit',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/CreateEdit.vue'),
-            /* wwEditor:end */
-        },
+        // {
+        //     name: 'Create edit',
+        //     code: 'createEdit',
+        //     isAsync: true,
+        //     /* wwEditor:start */
+        //     edit: () => import('./src/components/Functions/CreateEdit.vue'),
+        //     /* wwEditor:end */
+        // },
     ],
 };
