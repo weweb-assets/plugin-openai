@@ -25,7 +25,8 @@ export default {
         frequency_penalty,
         logit_bias,
         user,
-        systemMessage,
+        securedPrompt,
+        securedPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -43,7 +44,8 @@ export default {
             frequency_penalty,
             logit_bias,
             user,
-            systemMessage,
+            securedPrompt,
+            securedPromptVariables,
         };
         try {
             let response = null;
@@ -81,9 +83,8 @@ export default {
         best_of,
         logit_bias,
         user,
-        promptType,
-        systemPrompt,
-        systemPromptVariables,
+        securedPrompt,
+        securedPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -104,9 +105,8 @@ export default {
             best_of,
             logit_bias,
             user,
-            promptType,
-            systemPrompt,
-            systemPromptVariables,
+            securedPrompt,
+            securedPromptVariables,
         };
         try {
             let response = null;

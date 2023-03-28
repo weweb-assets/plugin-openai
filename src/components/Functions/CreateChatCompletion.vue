@@ -28,7 +28,7 @@
             placeholder="Enter a value"
             bindable
             required
-            @update:modelValue="securedPromptVariables({ ...securedPromptVariables, [variable.value]: $event })"
+            @update:modelValue="setSecuredPromptVariables({ ...securedPromptVariables, [variable.value]: $event })"
         />
     </template>
     <wwEditorInputRow
@@ -460,8 +460,8 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });
         },
-        securedPromptVariables() {
-            return this.args.securedPromptVariables || {};
+        setSecuredPromptVariables(securedPromptVariables) {
+            this.$emit('update:args', { ...this.args, securedPromptVariables });
         },
         onAction(action) {
             action.onAction && action.onAction();
