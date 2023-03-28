@@ -9,13 +9,28 @@
         required
     />
     <wwEditorInputRow
-        label="System message"
-        placeholder="Select a system message"
+        label="System content"
+        placeholder="Select a system content"
         type="select"
-        :options="systemMessageOptions"
-        :model-value="systemMessage"
-        @update:modelValue="setSystemMessage"
+        :actions="securedPromptActions"
+        :options="securedPromptOptions"
+        :model-value="securedPrompt"
+        @update:modelValue="setSecuredPrompt"
+        @action="onAction"
     />
+    <template v-if="systemPrompt">
+        <wwEditorInputRow
+            v-for="(variable, index) in variablesOptions"
+            :key="index"
+            type="query"
+            :model-value="securedPromptVariables[variable.value]"
+            :label="variable.value"
+            placeholder="Enter a value"
+            bindable
+            required
+            @update:modelValue="securedPromptVariables({ ...securedPromptVariables, [variable.value]: $event })"
+        />
+    </template>
     <wwEditorInputRow
         label="Messages"
         type="array"
@@ -289,6 +304,7 @@ export default {
     emits: ['update:args'],
     data() {
         return {
+            securedPromptActions: [{ icon: 'add', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
             modelOptions: [
                 { label: 'gpt-4', value: 'gpt-4' },
                 { label: 'gpt-4-0314', value: 'gpt-4-0314' },
@@ -326,17 +342,31 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         };
     },
     computed: {
-        systemMessageOptions() {
-            return (this.plugin.settings.privateData.chatCompletionsMessages || []).map(item => ({
+        securedPromptOptions() {
+            return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
                 label: item.title,
                 value: item.id,
             }));
         },
+        variablesOptions() {
+            if (!this.securedPrompt) return [];
+            const securedPrompt = (this.plugin.settings.privateData.securedPrompts || []).find(
+                item => item.id === this.securedPrompt
+            );
+            if (!securedPrompt) return [];
+            return (securedPrompt.content || '')
+                .match(/{{\w+}}/g)
+                .map(item => item.replace(/{{|}}/g, ''))
+                .map(item => ({ label: item, value: item }));
+        },
+        securedPromptVariables() {
+            return this.args.securedPromptVariables || {};
+        },
         model() {
             return this.args.model;
         },
-        systemMessage() {
-            return this.args.systemMessage;
+        securedPrompt() {
+            return this.args.securedPrompt;
         },
         messages() {
             return this.args.messages || [];
@@ -397,8 +427,8 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         setModel(model) {
             this.$emit('update:args', { ...this.args, model });
         },
-        setSystemMessage(systemMessage) {
-            this.$emit('update:args', { ...this.args, systemMessage });
+        setSecuredPrompt(securedPrompt) {
+            this.$emit('update:args', { ...this.args, securedPrompt });
         },
         setMessages(messages) {
             this.$emit('update:args', { ...this.args, messages });
@@ -429,6 +459,16 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         },
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });
+        },
+        securedPromptVariables() {
+            return this.args.securedPromptVariables || {};
+        },
+        onAction(action) {
+            action.onAction && action.onAction();
+        },
+        openOpenAIConfig() {
+            wwLib.$emit('wwTopBar:open', 'WEBSITE_PLUGIN');
+            this.$nextTick(() => wwLib.$emit('wwTopBar:plugins:setPlugin', 'd66a250d-8468-469e-ad33-ee028f632398'));
         },
     },
 };
