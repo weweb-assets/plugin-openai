@@ -395,7 +395,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
     computed: {
         securedPromptOptions() {
             return [
-                ...(this.plugin.settings.privateData.completionsPrompts || []).map(item => ({
+                ...(this.plugin.settings.privateData.securedPrompts || []).map(item => ({
                     label: item.title,
                     value: item.id,
                 })),
