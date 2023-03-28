@@ -18,7 +18,7 @@
         @update:modelValue="setSecuredPrompt"
         @action="onAction"
     />
-    <template v-if="systemPrompt">
+    <template v-if="securedPrompt">
         <wwEditorInputRow
             v-for="(variable, index) in variablesOptions"
             :key="index"
@@ -304,7 +304,7 @@ export default {
     emits: ['update:args'],
     data() {
         return {
-            securedPromptActions: [{ icon: 'add', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
+            securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
             modelOptions: [
                 { label: 'gpt-4', value: 'gpt-4' },
                 { label: 'gpt-4-0314', value: 'gpt-4-0314' },

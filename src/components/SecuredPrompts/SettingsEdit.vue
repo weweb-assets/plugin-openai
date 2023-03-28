@@ -72,7 +72,7 @@ export default {
                     .map(item => parseInt(item)),
                 0
             );
-            setItem({ ...item, content: item.content + `{{var${number + 1}}}` });
+            setItem({ ...item, content: (item.content || '') + `{{var${number + 1}}}` });
         },
     },
 };
