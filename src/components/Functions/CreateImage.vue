@@ -1,5 +1,5 @@
 <template>
-    <wwEditorFormRow label="Prompt">
+    <wwEditorFormRow label="Prompt" required>
         <div class="flex items-center">
             <wwEditorInput
                 label="Prompt"

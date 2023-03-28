@@ -28,6 +28,9 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateCompletion.vue'),
+            getIsValid({ model, prompt, securedPrompt }) {
+                return !!model && !!securedPrompt && (securedPrompt !== 'custom' || !!prompt);
+            },
             /* wwEditor:end */
         },
         {
@@ -36,6 +39,9 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateChatCompletion.vue'),
+            getIsValid({ model, messages, securedPrompt }) {
+                return !!model && (!!messages.length || !!securedPrompt);
+            },
             /* wwEditor:end */
         },
         {
@@ -44,6 +50,9 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateImage.vue'),
+            getIsValid({ prompt }) {
+                return !!prompt;
+            },
             /* wwEditor:end */
         },
         // {
