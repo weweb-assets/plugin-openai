@@ -13,9 +13,11 @@
         placeholder="Select a secured prompt"
         type="select"
         required
+        :actions="securedPromptActions"
         :options="securedPromptOptions"
         :model-value="securedPrompt"
         @update:modelValue="setSecuredPrompt"
+        @action="onAction"
     />
     <wwEditorFormRow v-if="securedPrompt === 'custom'" label="Prompt">
         <div class="flex items-center">
@@ -342,6 +344,7 @@ export default {
     emits: ['update:args'],
     data() {
         return {
+            securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
             modelOptions: [
                 { label: 'text-davinci-003', value: 'text-davinci-003' },
                 { label: 'text-davinci-002', value: 'text-davinci-002' },
@@ -545,6 +548,13 @@ Note: Because this parameter generates many completions, it can quickly consume 
         },
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });
+        },
+        onAction(action) {
+            action.onAction && action.onAction();
+        },
+        openOpenAIConfig() {
+            wwLib.$emit('wwTopBar:open', 'WEBSITE_PLUGIN');
+            this.$nextTick(() => wwLib.$emit('wwTopBar:plugins:setPlugin', 'd66a250d-8468-469e-ad33-ee028f632398'));
         },
     },
 };
