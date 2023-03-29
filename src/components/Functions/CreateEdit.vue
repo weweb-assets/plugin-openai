@@ -9,6 +9,19 @@
         required
         bindable
     />
+    <wwEditorFormRow label="Input">
+        <div class="flex items-center">
+            <wwEditorInput
+                label="Input"
+                placeholder="Enter a value"
+                type="query"
+                :model-value="input"
+                @update:modelValue="setInput"
+                bindable
+            />
+            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.input" />
+        </div>
+    </wwEditorFormRow>
     <wwEditorFormRow label="Instruction">
         <div class="flex items-center">
             <wwEditorInput
@@ -21,19 +34,6 @@
                 required
             />
             <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.instruction" />
-        </div>
-    </wwEditorFormRow>
-    <wwEditorFormRow label="Input">
-        <div class="flex items-center">
-            <wwEditorInput
-                label="Input"
-                placeholder="Enter a value"
-                type="query"
-                :model-value="input"
-                @update:modelValue="setInput"
-                bindable
-            />
-            <wwEditorQuestionMark tooltip-position="top-left" class="ml-2" :forcedContent="questionMark.input" />
         </div>
     </wwEditorFormRow>
     <wwEditorFormRow label="Number of edits">

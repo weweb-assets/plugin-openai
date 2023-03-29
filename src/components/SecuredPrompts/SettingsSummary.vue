@@ -1,9 +1,9 @@
 <template>
-    <div class="flex items-center body-2" v-for="(completionsPrompt, index) of completionsPrompts" :key="index">
+    <div class="flex items-center body-2" v-for="(securedPrompt, index) of securedPrompts" :key="index">
         <wwEditorIcon name="minus-sm" class="mr-2" :class="{ 'mt-1': !!index }" />
-        <div class="text-ellipsis">{{ completionsPrompt.title }}</div>
+        <div class="text-ellipsis">{{ securedPrompt.title }}</div>
     </div>
-    <div class="flex items-center body-2" v-if="!completionsPrompts.length">
+    <div class="flex items-center body-2" v-if="!securedPrompts.length">
         <wwEditorIcon name="minus-sm" class="mr-2" />
         <div class="text-ellipsis">No prompt defined.</div>
     </div>
@@ -15,8 +15,8 @@ export default {
         settings: { type: Object, required: true },
     },
     computed: {
-        completionsPrompts() {
-            return this.settings.privateData.completionsPrompts || [];
+        securedPrompts() {
+            return this.settings.privateData.securedPrompts || [];
         },
     },
 };

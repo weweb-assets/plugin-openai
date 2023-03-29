@@ -1,14 +1,12 @@
 /* wwEditor:start */
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
-import './components/Completions/SettingsEdit.vue';
-import './components/Completions/SettingsSummary.vue';
-import './components/ChatCompletions/SettingsEdit.vue';
-import './components/ChatCompletions/SettingsSummary.vue';
+import './components/SecuredPrompts/SettingsEdit.vue';
+import './components/SecuredPrompts/SettingsSummary.vue';
 import './components/Functions/CreateCompletion.vue';
 import './components/Functions/CreateChatCompletion.vue';
 import './components/Functions/CreateImage.vue';
-import './components/Functions/CreateEdit.vue';
+// import './components/Functions/CreateEdit.vue';
 /* wwEditor:end */
 
 export default {
@@ -27,7 +25,8 @@ export default {
         frequency_penalty,
         logit_bias,
         user,
-        systemMessage,
+        securedPrompt,
+        securedPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -45,7 +44,8 @@ export default {
             frequency_penalty,
             logit_bias,
             user,
-            systemMessage,
+            securedPrompt,
+            securedPromptVariables,
         };
         try {
             let response = null;
@@ -83,9 +83,8 @@ export default {
         best_of,
         logit_bias,
         user,
-        promptType,
-        systemPrompt,
-        systemPromptVariables,
+        securedPrompt,
+        securedPromptVariables,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
@@ -106,9 +105,8 @@ export default {
             best_of,
             logit_bias,
             user,
-            promptType,
-            systemPrompt,
-            systemPromptVariables,
+            securedPrompt,
+            securedPromptVariables,
         };
         try {
             let response = null;

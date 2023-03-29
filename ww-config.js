@@ -11,23 +11,12 @@ export default {
                 },
             },
             {
-                label: 'Completion system prompt',
-                icon: 'advanced',
-                edit: () => import('./src/components/Completions/SettingsEdit.vue'),
-                summary: () => import('./src/components/Completions/SettingsSummary.vue'),
+                label: 'Secured prompts',
+                icon: 'auth',
+                edit: () => import('./src/components/SecuredPrompts/SettingsEdit.vue'),
+                summary: () => import('./src/components/SecuredPrompts/SettingsSummary.vue'),
                 getIsValid(settings) {
-                    return (settings.privateData.completionsPrompts || []).every(item => item.title && item.content);
-                },
-            },
-            {
-                label: 'Chat Completion system messages',
-                icon: 'advanced',
-                edit: () => import('./src/components/ChatCompletions/SettingsEdit.vue'),
-                summary: () => import('./src/components/ChatCompletions/SettingsSummary.vue'),
-                getIsValid(settings) {
-                    return (settings.privateData.chatCompletionsMessages || []).every(
-                        item => item.title && item.content
-                    );
+                    return (settings.privateData.securedPrompts || []).every(item => item.title && item.content);
                 },
             },
         ],
@@ -39,6 +28,9 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateCompletion.vue'),
+            getIsValid({ model, prompt, securedPrompt }) {
+                return !!model && !!securedPrompt && (securedPrompt !== 'custom' || !!prompt);
+            },
             /* wwEditor:end */
         },
         {
@@ -47,6 +39,9 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateChatCompletion.vue'),
+            getIsValid({ model, messages, securedPrompt }) {
+                return !!model && (!!messages.length || !!securedPrompt);
+            },
             /* wwEditor:end */
         },
         {
@@ -55,15 +50,18 @@ export default {
             isAsync: true,
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateImage.vue'),
+            getIsValid({ prompt }) {
+                return !!prompt;
+            },
             /* wwEditor:end */
         },
-        {
-            name: 'Create edit',
-            code: 'createEdit',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/CreateEdit.vue'),
-            /* wwEditor:end */
-        },
+        // {
+        //     name: 'Create edit',
+        //     code: 'createEdit',
+        //     isAsync: true,
+        //     /* wwEditor:start */
+        //     edit: () => import('./src/components/Functions/CreateEdit.vue'),
+        //     /* wwEditor:end */
+        // },
     ],
 };
