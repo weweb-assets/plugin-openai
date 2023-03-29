@@ -411,8 +411,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
                 item => item.id === this.securedPrompt
             );
             if (!securedPrompt) return [];
-            return (securedPrompt.content || '')
-                .match(/{{\w+}}/g)
+            return ((securedPrompt.content || '').match(/{{\w+}}/g) || [])
                 .map(item => item.replace(/{{|}}/g, ''))
                 .map(item => ({ label: item, value: item }));
         },

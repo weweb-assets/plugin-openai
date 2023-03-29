@@ -354,8 +354,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
                 item => item.id === this.securedPrompt
             );
             if (!securedPrompt) return [];
-            return (securedPrompt.content || '')
-                .match(/{{\w+}}/g)
+            return ((securedPrompt.content || '').match(/{{\w+}}/g) || [])
                 .map(item => item.replace(/{{|}}/g, ''))
                 .map(item => ({ label: item, value: item }));
         },
