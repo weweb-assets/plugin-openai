@@ -40,7 +40,7 @@ export default {
             /* wwEditor:start */
             edit: () => import('./src/components/Functions/CreateChatCompletion.vue'),
             getIsValid({ model, messages, securedPrompt }) {
-                return !!model && (!!messages.length || !!securedPrompt);
+                return !!model && (!!(messages || []).length || !!securedPrompt);
             },
             /* wwEditor:end */
         },
