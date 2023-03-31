@@ -2,7 +2,7 @@
 
 With this plugin, you will be able to tap into all of OpenAI's API products, including but not limited to:
 
-text completion,
-image generation, and
-chat completion, better known as chatGPT.
+* text completion,
+* image generation, and
+* chat completion, better known as chatGPT.
 
