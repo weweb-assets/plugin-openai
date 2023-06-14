@@ -8,9 +8,9 @@
         @update:modelValue="setModel"
         required
     />
-    <span class="label-sm flex flex-row" v-if="isUsingUnstableModel">
+    <span class="model-warning label-sm flex flex-row items-center mb-2" v-if="isUsingUnstableModel">
         <wwEditorIcon name="warning" small class="mr-1"/>
-        This model may be depreciated and no longer work in the future. <a href="https://platform.openai.com/docs/deprecations">See more</a>
+        This model may be depreciated and no longer work in the future. <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
     </span>
     <wwEditorInputRow
         label="System content"
@@ -488,3 +488,9 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
 };
 </script>
+
+<style scoped>
+.model-warning {
+    color: var(--ww-color-yellow-500);
+}
+</style>
