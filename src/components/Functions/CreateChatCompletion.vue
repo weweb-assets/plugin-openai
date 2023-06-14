@@ -10,7 +10,7 @@
     />
     <span class="model-warning label-sm flex flex-row items-center mb-2" v-if="isUsingUnstableModel">
         <wwEditorIcon name="warning" small class="mr-1"/>
-        This model may be depreciated and no longer work in the future. <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
+        This model may be deprecated and no longer work in the future. <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
     </span>
     <wwEditorInputRow
         label="System content"
@@ -312,10 +312,13 @@ export default {
             modelOptions: [
                 { label: 'gpt-4 (stable)', value: 'gpt-4' },
                 { label: 'gpt-4-0613', value: 'gpt-4-0613' },
+                { label: 'gpt-4-0314 (deprecated)', value: 'gpt-4-0314' },
                 { label: 'gpt-4-32k (stable)', value: 'gpt-4-32k' },
                 { label: 'gpt-4-32k-0613', value: 'gpt-4-32k-0613' },
+                { label: 'gpt-4-32k-0314 (deprecated)', value: 'gpt-4-32k-0314' },
                 { label: 'gpt-3.5-turbo (stable)', value: 'gpt-3.5-turbo' },
                 { label: 'gpt-3.5-turbo-0613', value: 'gpt-3.5-turbo-0613' },
+                { label: 'gpt-3.5-turbo-0301 (deprecated)', value: 'gpt-3.5-turbo-0301' },
             ],
             roleOptions: [
                 { label: 'System', value: 'system' },
@@ -348,7 +351,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     mounted() {
         if (['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314'].includes(this.model)) wwLib.wwNotification.open({
             text: {
-                en: `The model ${this.model} has been deprecated by OpenAI, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
+                en: `This model ${this.model} has been deprecated by OpenAI and will no longer work by 13th September 2023, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
             },
             color: 'yellow',
             duration: '8000',
@@ -356,7 +359,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
     computed: {
         isUsingUnstableModel() {
-            return ['gpt-3.5-turbo-0613', 'gpt-4-0613', 'gpt-4-32k-0613'].includes(this.model)
+            return ['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314', 'gpt-3.5-turbo-0613', 'gpt-4-0613', 'gpt-4-32k-0613'].includes(this.model)
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
