@@ -300,6 +300,19 @@
 </template>
 
 <script>
+
+const MODELS = [
+    { name: 'gpt-4', status: 'latest' },
+    { name: 'gpt-4-0613'},
+    { name: 'gpt-4-0314', status: 'deprecated - 13th September' },
+    { name: 'gpt-4-32k', status: 'latest' },
+    { name: 'gpt-4-32k-0613'},
+    { name: 'gpt-4-32k-0314', status: 'deprectated - 13th September' },
+    { name: 'gpt-3.5-turbo', status: 'latest' },
+    { name: 'gpt-3.5-turbo-0613'},
+    { name: 'gpt-3.5-turbo-0301', status: 'deprecated - 13th September' },
+]
+
 export default {
     props: {
         plugin: { type: Object, required: true },
@@ -309,17 +322,7 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
-            modelOptions: [
-                { label: 'gpt-4 (stable)', value: 'gpt-4' },
-                { label: 'gpt-4-0613', value: 'gpt-4-0613' },
-                { label: 'gpt-4-0314 (deprecated)', value: 'gpt-4-0314' },
-                { label: 'gpt-4-32k (stable)', value: 'gpt-4-32k' },
-                { label: 'gpt-4-32k-0613', value: 'gpt-4-32k-0613' },
-                { label: 'gpt-4-32k-0314 (deprecated)', value: 'gpt-4-32k-0314' },
-                { label: 'gpt-3.5-turbo (stable)', value: 'gpt-3.5-turbo' },
-                { label: 'gpt-3.5-turbo-0613', value: 'gpt-3.5-turbo-0613' },
-                { label: 'gpt-3.5-turbo-0301 (deprecated)', value: 'gpt-3.5-turbo-0301' },
-            ],
+            modelOptions: MODELS.map(model => ({label: `${model.name} (${model.status && '#' + model.status})`, value: model.value})),
             roleOptions: [
                 { label: 'System', value: 'system' },
                 { label: 'Assistant', value: 'assistant' },
@@ -359,7 +362,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
     computed: {
         isUsingUnstableModel() {
-            return ['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314', 'gpt-3.5-turbo-0613', 'gpt-4-0613', 'gpt-4-32k-0613'].includes(this.model)
+            return MODELS.filter(model => model.status !== 'latest').map(model => model.name).includes(this.model)
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
