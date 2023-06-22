@@ -8,6 +8,10 @@
         @update:modelValue="setModel"
         required
     />
+    <span class="model-warning label-sm flex flex-row items-center mb-2" v-if="isUsingUnstableModel">
+        <wwEditorIcon name="warning" small class="mr-1"/>
+        This model may be deprecated and no longer work in the future. <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
+    </span>
     <wwEditorInputRow
         label="System content"
         placeholder="Select a system content"
@@ -296,6 +300,19 @@
 </template>
 
 <script>
+
+const MODELS = [
+    { name: 'gpt-4', status: 'latest' },
+    { name: 'gpt-4-0613'},
+    { name: 'gpt-4-0314', status: 'deprecated - 13th September' },
+    { name: 'gpt-4-32k', status: 'latest' },
+    { name: 'gpt-4-32k-0613'},
+    { name: 'gpt-4-32k-0314', status: 'deprectated - 13th September' },
+    { name: 'gpt-3.5-turbo', status: 'latest' },
+    { name: 'gpt-3.5-turbo-0613'},
+    { name: 'gpt-3.5-turbo-0301', status: 'deprecated - 13th September' },
+]
+
 export default {
     props: {
         plugin: { type: Object, required: true },
@@ -305,14 +322,7 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
-            modelOptions: [
-                { label: 'gpt-4', value: 'gpt-4' },
-                { label: 'gpt-4-0314', value: 'gpt-4-0314' },
-                { label: 'gpt-4-32k', value: 'gpt-4-32k' },
-                { label: 'gpt-4-32k-0314', value: 'gpt-4-32k-0314' },
-                { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
-                { label: 'ggpt-3.5-turbo-0301', value: 'ggpt-3.5-turbo-0301' },
-            ],
+            modelOptions: MODELS.map(model => ({label: `${model.name} (${model.status && '#' + model.status})`, value: model.value})),
             roleOptions: [
                 { label: 'System', value: 'system' },
                 { label: 'Assistant', value: 'assistant' },
@@ -341,7 +351,19 @@ Accepts a json object that maps tokens (specified by their token ID in the token
             },
         };
     },
+    mounted() {
+        if (['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314'].includes(this.model)) wwLib.wwNotification.open({
+            text: {
+                en: `This model ${this.model} has been deprecated by OpenAI and will no longer work by 13th September 2023, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
+            },
+            color: 'yellow',
+            duration: '8000',
+        })
+    },
     computed: {
+        isUsingUnstableModel() {
+            return MODELS.filter(model => model.status !== 'latest').map(model => model.name).includes(this.model)
+        },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
                 label: item.title,
@@ -472,3 +494,9 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
 };
 </script>
+
+<style scoped>
+.model-warning {
+    color: var(--ww-color-yellow-500);
+}
+</style>
