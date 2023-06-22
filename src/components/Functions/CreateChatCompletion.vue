@@ -322,7 +322,7 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
-            modelOptions: MODELS.map(model => ({label: `${model.name} (${model.status && '#' + model.status})`, value: model.value})),
+            modelOptions: MODELS.map(model => ({label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`, value: model.name})),
             roleOptions: [
                 { label: 'System', value: 'system' },
                 { label: 'Assistant', value: 'assistant' },
