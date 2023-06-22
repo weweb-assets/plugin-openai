@@ -309,7 +309,9 @@ const MODELS = [
     { name: 'gpt-4-32k-0613'},
     { name: 'gpt-4-32k-0314', status: 'deprectated - 13th September' },
     { name: 'gpt-3.5-turbo', status: 'latest' },
+    { name: 'gpt-3.5-turbo-16k'},
     { name: 'gpt-3.5-turbo-0613'},
+    { name: 'gpt-3.5-turbo-16k-0613'},
     { name: 'gpt-3.5-turbo-0301', status: 'deprecated - 13th September' },
 ]
 
@@ -362,7 +364,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
     computed: {
         isUsingUnstableModel() {
-            return MODELS.filter(model => model.status !== 'latest').map(model => model.name).includes(this.model)
+            return MODELS.filter(model => model.status && model.status !== 'latest').map(model => model.name).includes(this.model)
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
