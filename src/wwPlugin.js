@@ -52,16 +52,25 @@ export default {
             /* wwEditor:start */
             response = await wwAxios.post(
                 `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
-                { data }
+                { data },
+                { responseType: 'stream' }
             );
             /* wwEditor:end */
             /* wwFront:start */
             response = await axios.post(
                 `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-                { data }
+                { data },
+                { responseType: 'stream' }
             );
             /* wwFront:end */
-            return response.data.data;
+            console.log(response);
+            response.data.on('data', result => {
+                console.log('data', result);
+            });
+            response.data.on('end', result => {
+                console.log('end', result);
+            });
+            // return response.data.data;
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
@@ -113,18 +122,25 @@ export default {
             /* wwEditor:start */
             response = await wwAxios.post(
                 `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
-                { data }
+                { data },
+                { responseType: 'stream' }
             );
             /* wwEditor:end */
             /* wwFront:start */
             response = await axios.post(
                 `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`,
-                {
-                    data,
-                }
+                { data },
+                { responseType: 'stream' }
             );
             /* wwFront:end */
-            return response.data.data;
+            console.log(response);
+            response.data.on('data', result => {
+                console.log('data', result);
+            });
+            response.data.on('end', result => {
+                console.log('end', result);
+            });
+            // return response.data.data;
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
