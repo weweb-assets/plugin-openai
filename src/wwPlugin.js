@@ -67,12 +67,7 @@ export default {
             /* wwFront:start */
             response = await fetch(
                 `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ data }),
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                }
+                { method: 'POST', body: JSON.stringify({ data }), headers: { 'Content-Type': 'application/json' } }
             );
             /* wwFront:end */
             return await handleStreamResponse(response, stream, streamVariableId);
@@ -140,7 +135,6 @@ export default {
                 method: 'POST',
                 body: JSON.stringify({ data }),
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
             });
             /* wwFront:end */
             return await handleStreamResponse(response, stream, streamVariableId);
@@ -219,13 +213,13 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                 if (!tmp.choices[parsed.choices[index].index]) tmp.choices.push(parsed.choices[index]);
                 else if (parsed.choices[index].text)
                     tmp.choices[parsed.choices[index].index].text += parsed.choices[index].text;
-                else if (parsed.choices[index].message)
-                    tmp.choices[parsed.choices[index].index].message.content += parsed.choices[index].message.content;
+                else if (parsed.choices[index].delta)
+                    tmp.choices[parsed.choices[index].index].delta.content += parsed.choices[index].delta.content;
 
                 if (stream) {
                     wwLib.wwVariable.updateValue(
                         streamVariableId,
-                        tmp.choices.map(choice => choice.text || choice.message || '')
+                        tmp.choices.map(choice => choice.text || choice.delta?.content || '')
                     );
                 }
             }
