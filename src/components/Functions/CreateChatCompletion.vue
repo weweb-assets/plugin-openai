@@ -300,6 +300,7 @@
     </wwEditorInputRow>
     <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" />
     <wwEditorInputRow
+        v-if="stream"
         label="Stream variable"
         placeholder="Choose an array variable"
         type="select"

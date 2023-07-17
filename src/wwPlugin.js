@@ -210,18 +210,18 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             if (message === '[DONE]') break;
             const parsed = JSON.parse(message);
 
-            tmp.created = parsed.created;
             tmp.id = parsed.id;
-            tmp.model = parsed.model;
             tmp.object = parsed.object;
-            tmp.index = parsed.index;
+            tmp.created = parsed.created;
+            tmp.model = parsed.model;
             tmp.finish_reason = parsed.finish_reason;
             if (!tmp.choices) tmp.choices = [];
             for (const index in parsed.choices) {
-                if (!tmp.choices[index]) tmp.choices.push(parsed.choices[index]);
-                else if (parsed.choices[index].text) tmp.choices[index].text += parsed.choices[index].text;
+                if (!tmp.choices[parsed.choices[index].index]) tmp.choices.push(parsed.choices[index]);
+                else if (parsed.choices[index].text)
+                    tmp.choices[parsed.choices[index].index].text += parsed.choices[index].text;
                 else if (parsed.choices[index].message)
-                    tmp.choices[index].message.content += parsed.choices[index].message.content;
+                    tmp.choices[parsed.choices[index].index].message.content += parsed.choices[index].message.content;
 
                 if (stream) {
                     wwLib.wwVariable.updateValue(
