@@ -515,7 +515,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
             return this.args.streamVariableId;
         },
         wwVariableOptions() {
-            return wwLib.$store.getters['data/getVariables']
+            return Object.values(wwLib.$store.getters['data/getVariables'])
                 .filter(variable => variable.type === 'array')
                 .map(variable => ({
                     label: variable.name,

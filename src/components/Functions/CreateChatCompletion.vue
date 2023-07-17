@@ -471,7 +471,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
             return this.args.streamVariableId;
         },
         wwVariableOptions() {
-            return wwLib.$store.getters['data/getVariables']
+            return Object.values(wwLib.$store.getters['data/getVariables'])
                 .filter(variable => variable.type === 'array')
                 .map(variable => ({
                     label: variable.name,
