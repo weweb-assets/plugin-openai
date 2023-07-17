@@ -120,27 +120,22 @@ export default {
         try {
             let response = null;
             /* wwEditor:start */
-            response = await wwAxios.post(
-                `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`,
-                { data },
-                { responseType: 'stream' }
-            );
+            response = await fetch(`${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/completions`, {
+                method: 'POST',
+                body: JSON.stringify({ data }),
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+            });
             /* wwEditor:end */
             /* wwFront:start */
-            response = await axios.post(
-                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`,
-                { data },
-                { responseType: 'stream' }
-            );
+            response = await fetch(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`, {
+                method: 'POST',
+                body: JSON.stringify({ data }),
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+            });
             /* wwFront:end */
-            console.log(response);
-            response.data.on('data', result => {
-                console.log('data', result);
-            });
-            response.data.on('end', result => {
-                console.log('end', result);
-            });
-            // return response.data.data;
+            return await handleStreamResponse(response);
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
@@ -193,3 +188,32 @@ export default {
         }
     },
 };
+
+async function handleStreamResponse(response) {
+    let tmp = {};
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let result = await reader.read();
+    while (!result.done) {
+        const text = decoder.decode(result.value);
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        for (const line of lines) {
+            const message = line.replace(/^data: /, '');
+            if (message === '[DONE]') break;
+            const parsed = JSON.parse(message);
+
+            tmp.created = parsed.created;
+            tmp.id = parsed.id;
+            tmp.model = parsed.model;
+            tmp.object = parsed.object;
+            if (!tmp.choices) tmp.choices = [];
+            for (const index in parsed.choices) {
+                if (!tmp.choices[index]) tmp.choices.push(parsed.choices[index]);
+                else tmp.choices[index].text += parsed.choices[index].text;
+            }
+        }
+        result = await reader.read();
+    }
+
+    return tmp;
+}
