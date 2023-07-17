@@ -214,7 +214,6 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             tmp.object = parsed.object;
             tmp.created = parsed.created;
             tmp.model = parsed.model;
-            tmp.finish_reason = parsed.finish_reason;
             if (!tmp.choices) tmp.choices = [];
             for (const index in parsed.choices) {
                 if (!tmp.choices[parsed.choices[index].index]) tmp.choices.push(parsed.choices[index]);
