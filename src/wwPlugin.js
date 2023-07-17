@@ -214,7 +214,10 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                 else if (parsed.choices[index].text)
                     tmp.choices[parsed.choices[index].index].text += parsed.choices[index].text;
                 else if (parsed.choices[index].delta)
-                    tmp.choices[parsed.choices[index].index].delta.content += parsed.choices[index].delta.content;
+                    tmp.choices[parsed.choices[index].index].delta.content += parsed.choices[index].delta.content || '';
+
+                tmp.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].delta.content;
+                tmp.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
 
                 if (stream) {
                     wwLib.wwVariable.updateValue(
