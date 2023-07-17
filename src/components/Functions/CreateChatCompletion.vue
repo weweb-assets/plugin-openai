@@ -299,6 +299,17 @@
         </template>
     </wwEditorInputRow>
     <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" />
+    <wwEditorInputRow
+        label="Stream variable"
+        placeholder="Choose an array variable"
+        type="select"
+        :actions="wwVariableActions"
+        :options="wwVariableOptions"
+        :model-value="streamVariableId"
+        @update:modelValue="setStreamVariableId"
+        @action="onAction"
+        required
+    />
 </template>
 
 <script>
@@ -325,6 +336,7 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
+            wwVariableActions: [{ icon: 'plus', label: 'Create variable', onAction: this.createWwVariable }],
             modelOptions: MODELS.map(model => ({
                 label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`,
                 value: model.name,
@@ -455,6 +467,17 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         stream() {
             return this.args.stream;
         },
+        streamVariableId() {
+            return this.args.streamVariableId;
+        },
+        wwVariableOptions() {
+            return wwLib.$store.getters['data/getVariables']
+                .filter(variable => variable.type === 'array')
+                .map(variable => ({
+                    label: variable.name,
+                    value: variable.id,
+                }));
+        },
     },
     methods: {
         setModel(model) {
@@ -499,8 +522,19 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         setStream(stream) {
             this.$emit('update:args', { ...this.args, stream });
         },
+        setStreamVariableId(streamVariableId) {
+            this.$emit('update:args', { ...this.args, streamVariableId });
+        },
         onAction(action) {
             action.onAction && action.onAction();
+        },
+        createWwVariable() {
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:open', 'WEBSITE_DATA');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:data:setMenu', 'variables');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            this.$nextTick(() => wwLib.$emit('wwTopBar:data:variables:setVariable', null));
         },
         openOpenAIConfig() {
             wwLib.$emit('wwTopBar:open', 'WEBSITE_PLUGIN');

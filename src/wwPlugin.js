@@ -27,10 +27,13 @@ export default {
         user,
         securedPrompt,
         securedPromptVariables,
+        stream,
+        streamVariableId,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
+        if (stream) wwLib.wwVariable.updateValue(streamVariableId, []);
         const data = {
             model,
             messages,
@@ -46,6 +49,7 @@ export default {
             user,
             securedPrompt,
             securedPromptVariables,
+            stream,
         };
         try {
             let response = null;
@@ -71,7 +75,7 @@ export default {
                 }
             );
             /* wwFront:end */
-            return await handleStreamResponse(response);
+            return await handleStreamResponse(response, stream, streamVariableId);
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
@@ -95,10 +99,13 @@ export default {
         user,
         securedPrompt,
         securedPromptVariables,
+        stream,
+        streamVariableId,
     }) {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
+        if (stream) wwLib.wwVariable.updateValue(streamVariableId, []);
         const data = {
             model,
             prompt,
@@ -136,7 +143,7 @@ export default {
                 credentials: 'include',
             });
             /* wwFront:end */
-            return await handleStreamResponse(response);
+            return await handleStreamResponse(response, stream, streamVariableId);
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
@@ -190,7 +197,7 @@ export default {
     },
 };
 
-async function handleStreamResponse(response) {
+async function handleStreamResponse(response, stream, streamVariableId) {
     let tmp = {};
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -210,7 +217,16 @@ async function handleStreamResponse(response) {
             if (!tmp.choices) tmp.choices = [];
             for (const index in parsed.choices) {
                 if (!tmp.choices[index]) tmp.choices.push(parsed.choices[index]);
-                else tmp.choices[index].text += parsed.choices[index].text;
+                else if (parsed.choices[index].text) tmp.choices[index].text += parsed.choices[index].text;
+                else if (parsed.choices[index].message)
+                    tmp.choices[index].message.content += parsed.choices[index].message.content;
+
+                if (stream) {
+                    wwLib.wwVariable.updateValue(
+                        streamVariableId,
+                        tmp.choices.map(choice => choice.text || choice.message || '')
+                    );
+                }
             }
         }
         result = await reader.read();
