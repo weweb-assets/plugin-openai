@@ -333,6 +333,7 @@
             </div>
         </template>
     </wwEditorInputRow>
+    <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" />
 </template>
 
 <script>
@@ -495,6 +496,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         user() {
             return this.args.user;
         },
+        stream() {
+            return this.args.stream;
+        },
     },
     methods: {
         setModel(model) {
@@ -547,6 +551,9 @@ Note: Because this parameter generates many completions, it can quickly consume 
         },
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });
+        },
+        setStream(stream) {
+            this.$emit('update:args', { ...this.args, stream });
         },
         onAction(action) {
             action.onAction && action.onAction();

@@ -50,27 +50,28 @@ export default {
         try {
             let response = null;
             /* wwEditor:start */
-            response = await wwAxios.post(
+            response = await fetch(
                 `${wwLib.wwApiRequests._getPluginsUrl()}/designs/${projectId}/openai/chat/completions`,
-                { data },
-                { responseType: 'stream' }
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ data }),
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                }
             );
             /* wwEditor:end */
             /* wwFront:start */
-            response = await axios.post(
+            response = await fetch(
                 `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-                { data },
-                { responseType: 'stream' }
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ data }),
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                }
             );
             /* wwFront:end */
-            console.log(response);
-            response.data.on('data', result => {
-                console.log('data', result);
-            });
-            response.data.on('end', result => {
-                console.log('end', result);
-            });
-            // return response.data.data;
+            return await handleStreamResponse(response);
         } catch (err) {
             if (err.response && err.response.data) throw new Error(err.response.data);
             else throw err;
