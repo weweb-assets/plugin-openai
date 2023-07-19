@@ -216,7 +216,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                 else if (parsed.choices[index].delta)
                     tmp.choices[parsed.choices[index].index].delta.content += parsed.choices[index].delta.content || '';
 
-                tmp.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].delta.content;
+                tmp.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].finish_reason;
                 tmp.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
 
                 if (stream) {
