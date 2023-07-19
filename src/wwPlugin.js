@@ -192,7 +192,7 @@ export default {
 };
 
 async function handleStreamResponse(response, stream, streamVariableId) {
-    let tmp = {};
+    let finalResult = {};
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let result = await reader.read();
@@ -204,31 +204,31 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             if (message === '[DONE]') break;
             const parsed = JSON.parse(message);
 
-            tmp.id = parsed.id;
-            tmp.object = parsed.object;
-            tmp.created = parsed.created;
-            tmp.model = parsed.model;
-            if (!tmp.choices) tmp.choices = [];
+            finalResult.id = parsed.id;
+            finalResult.object = parsed.object;
+            finalResult.created = parsed.created;
+            finalResult.model = parsed.model;
+            if (!finalResult.choices) finalResult.choices = [];
             for (const index in parsed.choices) {
                 if (parsed.choices[index].delta) {
                     parsed.choices[index].message = parsed.choices[index].delta;
                     delete parsed.choices[index].delta;
                 }
-                if (!tmp.choices[parsed.choices[index].index]) tmp.choices.push(parsed.choices[index]);
+                if (!finalResult.choices[parsed.choices[index].index]) finalResult.choices.push(parsed.choices[index]);
                 else if (parsed.choices[index].text) {
-                    tmp.choices[parsed.choices[index].index].text += parsed.choices[index].text;
+                    finalResult.choices[parsed.choices[index].index].text += parsed.choices[index].text;
                 } else if (parsed.choices[index].message) {
-                    tmp.choices[parsed.choices[index].index].message.content +=
+                    finalResult.choices[parsed.choices[index].index].message.content +=
                         parsed.choices[index].message.content || '';
                 }
 
-                tmp.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].finish_reason;
-                tmp.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
+                finalResult.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].finish_reason;
+                finalResult.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
 
                 if (stream) {
                     wwLib.wwVariable.updateValue(
                         streamVariableId,
-                        tmp.choices.map(choice => choice.text || choice.message?.content || '')
+                        finalResult.choices.map(choice => choice.text || choice.message?.content || '')
                     );
                 }
             }
@@ -236,5 +236,5 @@ async function handleStreamResponse(response, stream, streamVariableId) {
         result = await reader.read();
     }
 
-    return tmp;
+    return finalResult;
 }
