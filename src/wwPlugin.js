@@ -210,11 +210,17 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             tmp.model = parsed.model;
             if (!tmp.choices) tmp.choices = [];
             for (const index in parsed.choices) {
+                if (parsed.choices[index].delta) {
+                    parsed.choices[index].message = parsed.choices[index].delta;
+                    delete parsed.choices[index].delta;
+                }
                 if (!tmp.choices[parsed.choices[index].index]) tmp.choices.push(parsed.choices[index]);
-                else if (parsed.choices[index].text)
+                else if (parsed.choices[index].text) {
                     tmp.choices[parsed.choices[index].index].text += parsed.choices[index].text;
-                else if (parsed.choices[index].delta)
-                    tmp.choices[parsed.choices[index].index].delta.content += parsed.choices[index].delta.content || '';
+                } else if (parsed.choices[index].message) {
+                    tmp.choices[parsed.choices[index].index].message.content +=
+                        parsed.choices[index].message.content || '';
+                }
 
                 tmp.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].finish_reason;
                 tmp.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
@@ -222,7 +228,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                 if (stream) {
                     wwLib.wwVariable.updateValue(
                         streamVariableId,
-                        tmp.choices.map(choice => choice.text || choice.delta?.content || '')
+                        tmp.choices.map(choice => choice.text || choice.message?.content || '')
                     );
                 }
             }
