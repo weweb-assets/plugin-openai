@@ -70,9 +70,10 @@ export default {
                 { method: 'POST', body: JSON.stringify({ data }), headers: { 'Content-Type': 'application/json' } }
             );
             /* wwFront:end */
+            if (!response.ok) throw new Error(response.statusText);
             return await handleStreamResponse(response, stream, streamVariableId);
         } catch (err) {
-            if (err.response && err.response.data) throw new Error(err.response.data);
+            if (err.response?.data) throw new Error(err.response.data);
             else throw err;
         }
     },
@@ -137,9 +138,10 @@ export default {
                 headers: { 'Content-Type': 'application/json' },
             });
             /* wwFront:end */
+            if (!response.ok) throw new Error(response.statusText);
             return await handleStreamResponse(response, stream, streamVariableId);
         } catch (err) {
-            if (err.response && err.response.data) throw new Error(err.response.data);
+            if (err.response?.data) throw new Error(err.response.data);
             else throw err;
         }
     },
