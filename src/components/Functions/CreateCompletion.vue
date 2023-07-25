@@ -333,6 +333,19 @@
             </div>
         </template>
     </wwEditorInputRow>
+    <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" />
+    <wwEditorInputRow
+        v-if="stream"
+        label="Stream variable"
+        placeholder="Choose an array variable"
+        type="select"
+        :actions="wwVariableActions"
+        :options="wwVariableOptions"
+        :model-value="streamVariableId"
+        @update:modelValue="setStreamVariableId"
+        @action="onAction"
+        required
+    />
 </template>
 
 <script>
@@ -345,6 +358,7 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
+            wwVariableActions: [{ icon: 'plus', label: 'Create variable', onAction: this.createWwVariable }],
             modelOptions: [
                 { label: 'text-davinci-003', value: 'text-davinci-003' },
                 { label: 'text-davinci-002', value: 'text-davinci-002' },
@@ -495,6 +509,20 @@ Note: Because this parameter generates many completions, it can quickly consume 
         user() {
             return this.args.user;
         },
+        stream() {
+            return this.args.stream;
+        },
+        streamVariableId() {
+            return this.args.streamVariableId;
+        },
+        wwVariableOptions() {
+            return Object.values(wwLib.$store.getters['data/getVariables'])
+                .filter(variable => variable.type === 'array')
+                .map(variable => ({
+                    label: variable.name,
+                    value: variable.id,
+                }));
+        },
     },
     methods: {
         setModel(model) {
@@ -548,8 +576,22 @@ Note: Because this parameter generates many completions, it can quickly consume 
         setUser(user) {
             this.$emit('update:args', { ...this.args, user });
         },
+        setStream(stream) {
+            this.$emit('update:args', { ...this.args, stream });
+        },
+        setStreamVariableId(streamVariableId) {
+            this.$emit('update:args', { ...this.args, streamVariableId });
+        },
         onAction(action) {
             action.onAction && action.onAction();
+        },
+        createWwVariable() {
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:open', 'WEBSITE_DATA');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:data:setMenu', 'variables');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            this.$nextTick(() => wwLib.$emit('wwTopBar:data:variables:setVariable', null));
         },
         openOpenAIConfig() {
             wwLib.$emit('wwTopBar:open', 'WEBSITE_PLUGIN');

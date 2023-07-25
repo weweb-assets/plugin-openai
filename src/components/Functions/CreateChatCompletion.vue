@@ -9,8 +9,9 @@
         required
     />
     <span class="model-warning label-sm flex flex-row items-center mb-2" v-if="isUsingUnstableModel">
-        <wwEditorIcon name="warning" small class="mr-1"/>
-        This model may be deprecated and no longer work in the future. <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
+        <wwEditorIcon name="warning" small class="mr-1" />
+        This model may be deprecated and no longer work in the future.
+        <a class="ww-editor-link" href="https://platform.openai.com/docs/deprecations" target="_blank">See more</a>
     </span>
     <wwEditorInputRow
         label="System content"
@@ -297,23 +298,35 @@
             </div>
         </template>
     </wwEditorInputRow>
+    <wwEditorInputRow label="Stream" type="boolean" :model-value="stream" @update:modelValue="setStream" />
+    <wwEditorInputRow
+        v-if="stream"
+        label="Stream variable"
+        placeholder="Choose an array variable"
+        type="select"
+        :actions="wwVariableActions"
+        :options="wwVariableOptions"
+        :model-value="streamVariableId"
+        @update:modelValue="setStreamVariableId"
+        @action="onAction"
+        required
+    />
 </template>
 
 <script>
-
 const MODELS = [
     { name: 'gpt-4', status: 'latest' },
-    { name: 'gpt-4-0613'},
+    { name: 'gpt-4-0613' },
     { name: 'gpt-4-0314', status: 'deprecated - 13th September' },
     { name: 'gpt-4-32k', status: 'latest' },
-    { name: 'gpt-4-32k-0613'},
+    { name: 'gpt-4-32k-0613' },
     { name: 'gpt-4-32k-0314', status: 'deprectated - 13th September' },
     { name: 'gpt-3.5-turbo', status: 'latest' },
-    { name: 'gpt-3.5-turbo-16k'},
-    { name: 'gpt-3.5-turbo-0613'},
-    { name: 'gpt-3.5-turbo-16k-0613'},
+    { name: 'gpt-3.5-turbo-16k' },
+    { name: 'gpt-3.5-turbo-0613' },
+    { name: 'gpt-3.5-turbo-16k-0613' },
     { name: 'gpt-3.5-turbo-0301', status: 'deprecated - 13th September' },
-]
+];
 
 export default {
     props: {
@@ -324,7 +337,11 @@ export default {
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
-            modelOptions: MODELS.map(model => ({label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`, value: model.name})),
+            wwVariableActions: [{ icon: 'plus', label: 'Create variable', onAction: this.createWwVariable }],
+            modelOptions: MODELS.map(model => ({
+                label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`,
+                value: model.name,
+            })),
             roleOptions: [
                 { label: 'System', value: 'system' },
                 { label: 'Assistant', value: 'assistant' },
@@ -354,17 +371,20 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         };
     },
     mounted() {
-        if (['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314'].includes(this.model)) wwLib.wwNotification.open({
-            text: {
-                en: `This model ${this.model} has been deprecated by OpenAI and will no longer work by 13th September 2023, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
-            },
-            color: 'yellow',
-            duration: '8000',
-        })
+        if (['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314'].includes(this.model))
+            wwLib.wwNotification.open({
+                text: {
+                    en: `This model ${this.model} has been deprecated by OpenAI and will no longer work by 13th September 2023, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
+                },
+                color: 'yellow',
+                duration: '8000',
+            });
     },
     computed: {
         isUsingUnstableModel() {
-            return MODELS.filter(model => model.status && model.status !== 'latest').map(model => model.name).includes(this.model)
+            return MODELS.filter(model => model.status && model.status !== 'latest')
+                .map(model => model.name)
+                .includes(this.model);
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
@@ -445,6 +465,20 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         user() {
             return this.args.user;
         },
+        stream() {
+            return this.args.stream;
+        },
+        streamVariableId() {
+            return this.args.streamVariableId;
+        },
+        wwVariableOptions() {
+            return Object.values(wwLib.$store.getters['data/getVariables'])
+                .filter(variable => variable.type === 'array')
+                .map(variable => ({
+                    label: variable.name,
+                    value: variable.id,
+                }));
+        },
     },
     methods: {
         setModel(model) {
@@ -486,8 +520,22 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         setSecuredPromptVariables(securedPromptVariables) {
             this.$emit('update:args', { ...this.args, securedPromptVariables });
         },
+        setStream(stream) {
+            this.$emit('update:args', { ...this.args, stream });
+        },
+        setStreamVariableId(streamVariableId) {
+            this.$emit('update:args', { ...this.args, streamVariableId });
+        },
         onAction(action) {
             action.onAction && action.onAction();
+        },
+        createWwVariable() {
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:open', 'WEBSITE_DATA');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            wwLib.$emit('wwTopBar:data:setMenu', 'variables');
+            // eslint-disable-next-line vue/custom-event-name-casing
+            this.$nextTick(() => wwLib.$emit('wwTopBar:data:variables:setVariable', null));
         },
         openOpenAIConfig() {
             wwLib.$emit('wwTopBar:open', 'WEBSITE_PLUGIN');
