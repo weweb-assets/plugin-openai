@@ -206,7 +206,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             if (message === '[DONE]') break;
             try {
                 tmp += message;
-                const parsed = JSON.parse(message);
+                const parsed = JSON.parse(tmp);
                 tmp = '';
                 finalResult.id = parsed.id;
                 finalResult.object = parsed.object;
