@@ -201,11 +201,13 @@ async function handleStreamResponse(response, stream, streamVariableId) {
     while (!result.done) {
         const text = decoder.decode(result.value);
         const lines = text.split('data: ').filter(line => line.trim() !== '');
+        let tmp = '';
         for (const message of lines) {
             if (message === '[DONE]') break;
             try {
+                tmp += message;
                 const parsed = JSON.parse(message);
-
+                tmp = '';
                 finalResult.id = parsed.id;
                 finalResult.object = parsed.object;
                 finalResult.created = parsed.created;
@@ -237,6 +239,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                     }
                 }
             } catch (err) {
+                tmp += message;
                 console.error(err);
             }
         }
