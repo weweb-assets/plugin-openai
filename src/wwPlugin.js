@@ -200,9 +200,8 @@ async function handleStreamResponse(response, stream, streamVariableId) {
     let result = await reader.read();
     while (!result.done) {
         const text = decoder.decode(result.value);
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        for (const line of lines) {
-            const message = line.replace(/^data: /, '');
+        const lines = text.split('data: ').filter(line => line.trim() !== '');
+        for (const message of lines) {
             if (message === '[DONE]') break;
             const parsed = JSON.parse(message);
 
