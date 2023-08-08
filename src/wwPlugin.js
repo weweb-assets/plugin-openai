@@ -198,16 +198,15 @@ async function handleStreamResponse(response, stream, streamVariableId) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let result = await reader.read();
+    let text = '';
     while (!result.done) {
-        const text = decoder.decode(result.value);
+        text += decoder.decode(result.value);
         const lines = text.split('data: ').filter(line => line.trim() !== '');
-        let tmp = '';
         for (const message of lines) {
             if (message === '[DONE]') break;
             try {
-                tmp += message;
                 const parsed = JSON.parse(tmp);
-                tmp = '';
+                text = '';
                 finalResult.id = parsed.id;
                 finalResult.object = parsed.object;
                 finalResult.created = parsed.created;
@@ -231,7 +230,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                         parsed.choices[index].finish_reason;
                     finalResult.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
 
-                    if (stream) {
+                    if (stream && streamVariableId) {
                         wwLib.wwVariable.updateValue(
                             streamVariableId,
                             finalResult.choices.map(choice => choice.text || choice.message?.content || '')
@@ -239,7 +238,6 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                     }
                 }
             } catch (err) {
-                tmp += message;
                 console.error(err);
             }
         }
