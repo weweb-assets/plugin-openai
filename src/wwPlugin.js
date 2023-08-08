@@ -238,7 +238,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                     }
                 }
             } catch {
-                // If JSON.parse fails contact text result
+                // If JSON.parse fails concact text result
                 continue;
             }
         }
