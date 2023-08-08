@@ -237,8 +237,9 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                         );
                     }
                 }
-            } catch (err) {
-                console.error(err);
+            } catch {
+                // If JSON.parse fails contact text result
+                continue;
             }
         }
         result = await reader.read();
