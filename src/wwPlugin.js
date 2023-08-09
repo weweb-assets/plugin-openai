@@ -198,41 +198,48 @@ async function handleStreamResponse(response, stream, streamVariableId) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let result = await reader.read();
+    let text = '';
     while (!result.done) {
-        const text = decoder.decode(result.value);
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        for (const line of lines) {
-            const message = line.replace(/^data: /, '');
+        text += decoder.decode(result.value);
+        const lines = text.split('data: ').filter(line => line.trim() !== '');
+        for (const message of lines) {
             if (message === '[DONE]') break;
-            const parsed = JSON.parse(message);
+            try {
+                const parsed = JSON.parse(message);
+                text = '';
+                finalResult.id = parsed.id;
+                finalResult.object = parsed.object;
+                finalResult.created = parsed.created;
+                finalResult.model = parsed.model;
+                if (!finalResult.choices) finalResult.choices = [];
+                for (const index in parsed.choices) {
+                    if (parsed.choices[index].delta) {
+                        parsed.choices[index].message = parsed.choices[index].delta;
+                        delete parsed.choices[index].delta;
+                    }
+                    if (!finalResult.choices[parsed.choices[index].index])
+                        finalResult.choices.push(parsed.choices[index]);
+                    else if (parsed.choices[index].text) {
+                        finalResult.choices[parsed.choices[index].index].text += parsed.choices[index].text;
+                    } else if (parsed.choices[index].message) {
+                        finalResult.choices[parsed.choices[index].index].message.content +=
+                            parsed.choices[index].message.content || '';
+                    }
 
-            finalResult.id = parsed.id;
-            finalResult.object = parsed.object;
-            finalResult.created = parsed.created;
-            finalResult.model = parsed.model;
-            if (!finalResult.choices) finalResult.choices = [];
-            for (const index in parsed.choices) {
-                if (parsed.choices[index].delta) {
-                    parsed.choices[index].message = parsed.choices[index].delta;
-                    delete parsed.choices[index].delta;
-                }
-                if (!finalResult.choices[parsed.choices[index].index]) finalResult.choices.push(parsed.choices[index]);
-                else if (parsed.choices[index].text) {
-                    finalResult.choices[parsed.choices[index].index].text += parsed.choices[index].text;
-                } else if (parsed.choices[index].message) {
-                    finalResult.choices[parsed.choices[index].index].message.content +=
-                        parsed.choices[index].message.content || '';
-                }
+                    finalResult.choices[parsed.choices[index].index].finish_reason =
+                        parsed.choices[index].finish_reason;
+                    finalResult.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
 
-                finalResult.choices[parsed.choices[index].index].finish_reason = parsed.choices[index].finish_reason;
-                finalResult.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
-
-                if (stream) {
-                    wwLib.wwVariable.updateValue(
-                        streamVariableId,
-                        finalResult.choices.map(choice => choice.text || choice.message?.content || '')
-                    );
+                    if (stream && streamVariableId) {
+                        wwLib.wwVariable.updateValue(
+                            streamVariableId,
+                            finalResult.choices.map(choice => choice.text || choice.message?.content || '')
+                        );
+                    }
                 }
+            } catch {
+                // If JSON.parse fails concact text result
+                continue;
             }
         }
         result = await reader.read();

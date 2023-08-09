@@ -23,17 +23,6 @@ export default {
     },
     actions: [
         {
-            name: 'Create completion',
-            code: 'createCompletion',
-            isAsync: true,
-            /* wwEditor:start */
-            edit: () => import('./src/components/Functions/CreateCompletion.vue'),
-            getIsValid({ model, prompt, securedPrompt }) {
-                return !!model && !!securedPrompt && (securedPrompt !== 'custom' || !!prompt);
-            },
-            /* wwEditor:end */
-        },
-        {
             name: 'Create chat completion',
             code: 'createChatCompletion',
             isAsync: true,
@@ -52,6 +41,17 @@ export default {
             edit: () => import('./src/components/Functions/CreateImage.vue'),
             getIsValid({ prompt }) {
                 return !!prompt;
+            },
+            /* wwEditor:end */
+        },
+        {
+            name: 'Create completion (Legacy)',
+            code: 'createCompletion',
+            isAsync: true,
+            /* wwEditor:start */
+            edit: () => import('./src/components/Functions/CreateCompletion.vue'),
+            getIsValid({ model, prompt, securedPrompt }) {
+                return !!model && !!securedPrompt && (securedPrompt !== 'custom' || !!prompt);
             },
             /* wwEditor:end */
         },

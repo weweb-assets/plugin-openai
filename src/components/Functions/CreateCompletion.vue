@@ -349,6 +349,18 @@
 </template>
 
 <script>
+const MODELS = [
+    { name: 'text-davinci-003', status: 'deprecated - 4th January 2024' },
+    { name: 'text-davinci-002' },
+    { name: 'text-curie-001', status: 'deprecated - 4th January 2024' },
+    { name: 'text-babbage-001', status: 'deprecated - 4th January 2024' },
+    { name: 'text-ada-001', status: 'deprecated - 4th January 2024' },
+    { name: 'davinci' },
+    { name: 'curie' },
+    { name: 'babbage' },
+    { name: 'ada' },
+];
+
 export default {
     props: {
         plugin: { type: Object, required: true },
@@ -359,17 +371,10 @@ export default {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
             wwVariableActions: [{ icon: 'plus', label: 'Create variable', onAction: this.createWwVariable }],
-            modelOptions: [
-                { label: 'text-davinci-003', value: 'text-davinci-003' },
-                { label: 'text-davinci-002', value: 'text-davinci-002' },
-                { label: 'text-curie-001', value: 'text-curie-001' },
-                { label: 'text-babbage-001', value: 'text-babbage-001' },
-                { label: 'text-ada-001', value: 'text-ada-001' },
-                { label: 'davinci', value: 'davinci' },
-                { label: 'curie', value: 'curie' },
-                { label: 'babbage', value: 'babbage' },
-                { label: 'ada', value: 'ada' },
-            ],
+            modelOptions: MODELS.map(model => ({
+                label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`,
+                value: model.name,
+            })),
             questionMark: {
                 prompt: `The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
