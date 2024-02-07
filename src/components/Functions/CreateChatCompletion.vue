@@ -355,7 +355,7 @@ Accepts a json object that maps tokens (specified by their token ID in the token
         };
     },
     async mounted() {
-        this.modelOptions = await this.plugin.getModels().map(model => ({ label: model.id, value: model.id }));
+        this.modelOptions = (await this.plugin.getModels())?.map(model => ({ label: model.id, value: model.id })) || [];
     },
     computed: {
         isUsingUnstableModel() {
