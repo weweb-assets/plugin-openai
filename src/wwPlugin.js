@@ -13,6 +13,19 @@ export default {
     /*=============================================m_ÔÔ_m=============================================\
         OpenAI API
     \================================================================================================*/
+    /* wwEditor:start */
+    async getModels() {
+        try {
+            const { data } = await axios.get(`https://api.openai.com/v1/models`, { 
+                headers: { Authorization: `Bearer ${this.settings.privateData.apiKey}` } 
+            });
+            return data.data;
+        } catch (err) {
+            if (err.response && err.response.data) throw new Error(err.response.data);
+            else throw err;
+        }
+    },
+    /* wwEditor:end */
     async createChatCompletion({
         model,
         messages,

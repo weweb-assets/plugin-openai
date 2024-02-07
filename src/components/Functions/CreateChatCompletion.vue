@@ -3,6 +3,7 @@
         label="Model"
         placeholder="Select a model"
         type="select"
+        bindable
         :options="modelOptions"
         :model-value="model"
         @update:modelValue="setModel"
@@ -314,20 +315,6 @@
 </template>
 
 <script>
-const MODELS = [
-    { name: 'gpt-4', status: 'latest' },
-    { name: 'gpt-4-0613' },
-    { name: 'gpt-4-0314', status: 'deprecated - 13th September' },
-    { name: 'gpt-4-32k', status: 'latest' },
-    { name: 'gpt-4-32k-0613' },
-    { name: 'gpt-4-32k-0314', status: 'deprectated - 13th September' },
-    { name: 'gpt-3.5-turbo', status: 'latest' },
-    { name: 'gpt-3.5-turbo-16k' },
-    { name: 'gpt-3.5-turbo-0613' },
-    { name: 'gpt-3.5-turbo-16k-0613' },
-    { name: 'gpt-3.5-turbo-0301', status: 'deprecated - 13th September' },
-];
-
 export default {
     props: {
         plugin: { type: Object, required: true },
@@ -338,10 +325,7 @@ export default {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
             wwVariableActions: [{ icon: 'plus', label: 'Create variable', onAction: this.createWwVariable }],
-            modelOptions: MODELS.map(model => ({
-                label: `${model.name}${model.status ? ` (${model.status && '#' + model.status})` : ''}`,
-                value: model.name,
-            })),
+            modelOptions: [],
             roleOptions: [
                 { label: 'System', value: 'system' },
                 { label: 'Assistant', value: 'assistant' },
@@ -370,21 +354,12 @@ Accepts a json object that maps tokens (specified by their token ID in the token
             },
         };
     },
-    mounted() {
-        if (['gpt-3.5-turbo-0301', 'gpt-4-0314', 'gpt-4-32k-0314'].includes(this.model))
-            wwLib.wwNotification.open({
-                text: {
-                    en: `This model ${this.model} has been deprecated by OpenAI and will no longer work by 13th September 2023, please select another model. More info at https://platform.openai.com/docs/deprecations.`,
-                },
-                color: 'yellow',
-                duration: '8000',
-            });
+    async mounted() {
+        this.modelOptions = await this.plugin.getModels().map(model => ({ label: model.id, value: model.id })
     },
     computed: {
         isUsingUnstableModel() {
-            return MODELS.filter(model => model.status && model.status !== 'latest')
-                .map(model => model.name)
-                .includes(this.model);
+            return !!this.model.match(/(gpt-).*-.*/)
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
