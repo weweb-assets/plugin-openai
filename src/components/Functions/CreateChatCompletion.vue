@@ -362,7 +362,8 @@ Accepts a json object that maps tokens (specified by their token ID in the token
     },
     computed: {
         isUsingUnstableModel() {
-            return !!this.model.match(/(gpt-).*-.*/);
+            return false;
+            // return !!this.model.match(/(gpt-).*-.*/);
         },
         securedPromptOptions() {
             return (this.plugin.settings.privateData.securedPrompts || []).map(item => ({
