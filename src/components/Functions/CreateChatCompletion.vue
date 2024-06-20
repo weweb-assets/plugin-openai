@@ -526,6 +526,6 @@ Accepts a json object that maps tokens (specified by their token ID in the token
 
 <style scoped>
 .model-warning {
-    color: var(--ww-color-yellow-500);
+    color: var(--ww-color-content-warning);
 }
 </style>

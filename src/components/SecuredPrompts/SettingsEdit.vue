@@ -7,7 +7,7 @@
         @add-item="setSecuredPrompts([...securedPrompts, getNewItem()])"
     >
         <template #default="{ item, index, setItem }">
-            <div class="flex flex-col" :class="{ 'border-top-stale-100 pt-3': !!index }">
+            <div class="flex flex-col" :class="{ 'border-top-primary pt-3': !!index }">
                 <wwEditorInputRow
                     type="query"
                     :model-value="item.title"
