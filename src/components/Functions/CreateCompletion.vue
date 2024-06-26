@@ -367,6 +367,13 @@ export default {
         args: { type: Object, default: () => {} },
     },
     emits: ['update:args'],
+    setup() {
+        const { website: websiteVariables } = wwLib.wwVariable.useEditorVariables();
+
+        return {
+            websiteVariables,
+        };
+    },
     data() {
         return {
             securedPromptActions: [{ icon: 'plus', label: 'Add secured prompt', onAction: this.openOpenAIConfig }],
@@ -521,7 +528,7 @@ Note: Because this parameter generates many completions, it can quickly consume 
             return this.args.streamVariableId;
         },
         wwVariableOptions() {
-            return Object.values(wwLib.$store.getters['data/getVariables'])
+            return Object.values(this.websiteVariables)
                 .filter(variable => variable.type === 'array')
                 .map(variable => ({
                     label: variable.name,
