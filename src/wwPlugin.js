@@ -46,7 +46,7 @@ export default {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
-        if (stream) wwLib.wwVariable.updateValue(streamVariableId, []);
+        if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
         const data = {
             model,
             messages,
@@ -114,7 +114,7 @@ export default {
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
-        if (stream) wwLib.wwVariable.updateValue(streamVariableId, []);
+        if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
         const data = {
             model,
             prompt,
@@ -246,7 +246,8 @@ async function handleStreamResponse(response, stream, streamVariableId) {
                     if (stream && streamVariableId) {
                         wwLib.wwVariable.updateValue(
                             streamVariableId,
-                            finalResult.choices.map(choice => choice.text || choice.message?.content || '')
+                            finalResult.choices.map(choice => choice.text || choice.message?.content || ''),
+                            { silent: true }
                         );
                     }
                 }
@@ -256,6 +257,14 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             }
         }
         result = await reader.read();
+    }
+
+    // After the stream completes, push one final non-silent update (if streaming was enabled)
+    if (stream && streamVariableId && finalResult?.choices) {
+        wwLib.wwVariable.updateValue(
+            streamVariableId,
+            finalResult.choices.map(choice => choice.text || choice.message?.content || '')
+        );
     }
 
     return finalResult;
