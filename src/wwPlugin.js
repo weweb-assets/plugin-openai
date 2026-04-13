@@ -78,10 +78,11 @@ export default {
             );
             /* wwEditor:end */
             /* wwFront:start */
-            response = await fetch(
-                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/chat/completions`,
-                { method: 'POST', body: JSON.stringify({ data }), headers: { 'Content-Type': 'application/json' } }
-            );
+            response = await fetch(`${window.location.origin}/ww/openai/chat/completions`, {
+                method: 'POST',
+                body: JSON.stringify({ data }),
+                headers: { 'Content-Type': 'application/json' },
+            });
             /* wwFront:end */
             if (!response.ok) throw new Error((await response.json()).message);
             return await handleStreamResponse(response, stream, streamVariableId);
@@ -145,7 +146,7 @@ export default {
             });
             /* wwEditor:end */
             /* wwFront:start */
-            response = await fetch(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/completions`, {
+            response = await fetch(`${window.location.origin}/ww/openai/completions`, {
                 method: 'POST',
                 body: JSON.stringify({ data }),
                 headers: { 'Content-Type': 'application/json' },
@@ -169,7 +170,7 @@ export default {
             });
             /* wwEditor:end */
             /* wwFront:start */
-            response = await axios.post(`//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/edits`, {
+            response = await axios.post(`${window.location.origin}/ww/openai/edits`, {
                 data,
             });
             /* wwFront:end */
@@ -193,10 +194,9 @@ export default {
             );
             /* wwEditor:end */
             /* wwFront:start */
-            response = await axios.post(
-                `//${projectId}.${wwLib.wwApiRequests._getPreviewUrl()}/ww/openai/images/generations`,
-                { data }
-            );
+            response = await axios.post(`${window.location.origin}/ww/openai/images/generations`, {
+                data,
+            });
             /* wwFront:end */
             return response.data.data;
         } catch (err) {
