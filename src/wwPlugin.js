@@ -1,3 +1,4 @@
+/* global wwAxios */
 /* wwEditor:start */
 import './components/Configuration/SettingsEdit.vue';
 import './components/Configuration/SettingsSummary.vue';
@@ -6,7 +7,6 @@ import './components/SecuredPrompts/SettingsSummary.vue';
 import './components/Functions/CreateCompletion.vue';
 import './components/Functions/CreateChatCompletion.vue';
 import './components/Functions/CreateImage.vue';
-// import './components/Functions/CreateEdit.vue';
 /* wwEditor:end */
 
 export default {
@@ -16,8 +16,8 @@ export default {
     /* wwEditor:start */
     async getModels() {
         try {
-            const { data } = await axios.get(`https://api.openai.com/v1/models`, { 
-                headers: { Authorization: `Bearer ${this.settings.privateData.apiKey}` } 
+            const { data } = await axios.get('https://api.openai.com/v1/models', {
+                headers: { Authorization: `Bearer ${this.settings.privateData.apiKey}` },
             });
             return data.data;
         } catch (err) {
@@ -26,23 +26,26 @@ export default {
         }
     },
     /* wwEditor:end */
-    async createChatCompletion({
-        model,
-        messages,
-        temperature,
-        top_p,
-        n,
-        stop,
-        max_tokens,
-        presence_penalty,
-        frequency_penalty,
-        logit_bias,
-        user,
-        securedPrompt,
-        securedPromptVariables,
-        stream,
-        streamVariableId,
-    }, wwUtils) {
+    async createChatCompletion(
+        {
+            model,
+            messages,
+            temperature,
+            top_p,
+            n,
+            stop,
+            max_tokens,
+            presence_penalty,
+            frequency_penalty,
+            logit_bias,
+            user,
+            securedPrompt,
+            securedPromptVariables,
+            stream,
+            streamVariableId,
+        },
+        wwUtils
+    ) {
         /* wwEditor:start */
         if (wwLib.editor?.isolatedCanvas) {
             if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
@@ -96,27 +99,30 @@ export default {
             else throw err;
         }
     },
-    async createCompletion({
-        model,
-        prompt,
-        suffix,
-        max_tokens,
-        temperature,
-        top_p,
-        n,
-        logprobs,
-        echo,
-        stop,
-        presence_penalty,
-        frequency_penalty,
-        best_of,
-        logit_bias,
-        user,
-        securedPrompt,
-        securedPromptVariables,
-        stream,
-        streamVariableId,
-    }, wwUtils) {
+    async createCompletion(
+        {
+            model,
+            prompt,
+            suffix,
+            max_tokens,
+            temperature,
+            top_p,
+            n,
+            logprobs,
+            echo,
+            stop,
+            presence_penalty,
+            frequency_penalty,
+            best_of,
+            logit_bias,
+            user,
+            securedPrompt,
+            securedPromptVariables,
+            stream,
+            streamVariableId,
+        },
+        wwUtils
+    ) {
         /* wwEditor:start */
         if (wwLib.editor?.isolatedCanvas) {
             if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
@@ -170,6 +176,7 @@ export default {
             else throw err;
         }
     },
+    // The published runtime still exposes this method to older callers.
     async createEdit({ model, input, instruction, n, temperature, top_p }) {
         /* wwEditor:start */
         if (wwLib.editor?.isolatedCanvas) throw Error('This action is unavailable in isolated preview.');
@@ -248,7 +255,8 @@ async function handleStreamResponse(response, stream, streamVariableId) {
         Object.assign(finalResult, { id, object, created, model });
         finalResult.choices ||= [];
         for (const choice of choices || []) {
-            if (!Number.isInteger(choice.index) || choice.index < 0 || choice.index >= 128) throw Error('Invalid completion choice');
+            if (!Number.isInteger(choice.index) || choice.index < 0 || choice.index >= 128)
+                throw Error('Invalid completion choice');
             const previous = finalResult.choices[choice.index];
             if (choice.delta) {
                 choice.message = choice.delta;
