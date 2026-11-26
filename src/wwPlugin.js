@@ -42,14 +42,19 @@ export default {
         securedPromptVariables,
         stream,
         streamVariableId,
-    }) {
+    }, wwUtils) {
+        /* wwEditor:start */
+        if (wwLib.editor?.isolatedCanvas) {
+            if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
+            return handleStreamResponse(await wwUtils.runPreviewAction(), stream, streamVariableId);
+        }
+        /* wwEditor:end */
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
         if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
         const data = {
             model,
-            messages,
             messages,
             temperature,
             top_p,
@@ -111,7 +116,13 @@ export default {
         securedPromptVariables,
         stream,
         streamVariableId,
-    }) {
+    }, wwUtils) {
+        /* wwEditor:start */
+        if (wwLib.editor?.isolatedCanvas) {
+            if (stream) wwLib.wwVariable.updateValue(streamVariableId, [], { silent: true });
+            return handleStreamResponse(await wwUtils.runPreviewAction(), stream, streamVariableId);
+        }
+        /* wwEditor:end */
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         logit_bias = (logit_bias || []).reduce((obj, item) => ({ ...obj, [item.key]: item.value }), {});
         if (!stop || !stop.length) stop = undefined;
@@ -160,6 +171,9 @@ export default {
         }
     },
     async createEdit({ model, input, instruction, n, temperature, top_p }) {
+        /* wwEditor:start */
+        if (wwLib.editor?.isolatedCanvas) throw Error('This action is unavailable in isolated preview.');
+        /* wwEditor:end */
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         const data = { model, input, instruction, n, temperature, top_p };
         try {
@@ -180,7 +194,10 @@ export default {
             else throw err;
         }
     },
-    async createImage({ prompt, n, size = '1024x1024', response_format = 'url', user }) {
+    async createImage({ prompt, n, size = '1024x1024', response_format = 'url', user }, wwUtils) {
+        /* wwEditor:start */
+        if (wwLib.editor?.isolatedCanvas) return wwUtils.runPreviewAction();
+        /* wwEditor:end */
         const projectId = wwLib.wwWebsiteData.getInfo().id;
         if (!size) size = '1024x1024';
         if (!response_format) response_format = 'url';
@@ -207,65 +224,66 @@ export default {
 };
 
 async function handleStreamResponse(response, stream, streamVariableId) {
-    let finalResult = {};
+    const finalResult = {};
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let result = await reader.read();
-    let text = '';
-    while (!result.done) {
-        text += decoder.decode(result.value);
-        const lines = text.split('data: ').filter(line => line.trim() !== '');
-        for (const message of lines) {
-            if (message === '[DONE]') break;
-            try {
-                const parsed = JSON.parse(message);
-                text = '';
-                finalResult.id = parsed.id;
-                finalResult.object = parsed.object;
-                finalResult.created = parsed.created;
-                finalResult.model = parsed.model;
-                if (!finalResult.choices) finalResult.choices = [];
-                for (const index in parsed.choices) {
-                    if (parsed.choices[index].delta) {
-                        parsed.choices[index].message = parsed.choices[index].delta;
-                        delete parsed.choices[index].delta;
-                    }
-                    if (!finalResult.choices[parsed.choices[index].index])
-                        finalResult.choices.push(parsed.choices[index]);
-                    else if (parsed.choices[index].text) {
-                        finalResult.choices[parsed.choices[index].index].text += parsed.choices[index].text;
-                    } else if (parsed.choices[index].message) {
-                        finalResult.choices[parsed.choices[index].index].message.content +=
-                            parsed.choices[index].message.content || '';
-                    }
-
-                    finalResult.choices[parsed.choices[index].index].finish_reason =
-                        parsed.choices[index].finish_reason;
-                    finalResult.choices[parsed.choices[index].index].logprobs = parsed.choices[index].logprobs;
-
-                    if (stream && streamVariableId) {
-                        wwLib.wwVariable.updateValue(
-                            streamVariableId,
-                            finalResult.choices.map(choice => choice.text || choice.message?.content || ''),
-                            { silent: true }
-                        );
-                    }
+    let pending = '';
+    let complete = false;
+    function accept(line) {
+        if (!line.startsWith('data:')) return;
+        const value = line.slice(5).trim();
+        if (value === '[DONE]') {
+            complete = true;
+            return;
+        }
+        const { id, object, created, model, choices } = JSON.parse(value);
+        Object.assign(finalResult, { id, object, created, model });
+        finalResult.choices ||= [];
+        for (const choice of choices || []) {
+            if (!Number.isInteger(choice.index) || choice.index < 0 || choice.index >= 128) throw Error('Invalid completion choice');
+            const previous = finalResult.choices[choice.index];
+            if (choice.delta) {
+                choice.message = choice.delta;
+                delete choice.delta;
+            }
+            if (!previous) finalResult.choices[choice.index] = choice;
+            else {
+                if (choice.text) previous.text = (previous.text || '') + choice.text;
+                if (choice.message) {
+                    previous.message ||= {};
+                    previous.message.content = (previous.message.content || '') + (choice.message.content || '');
                 }
-            } catch {
-                // If JSON.parse fails concact text result
-                continue;
+                previous.finish_reason = choice.finish_reason;
+                previous.logprobs = choice.logprobs;
             }
         }
-        result = await reader.read();
+        if (stream && streamVariableId) wwLib.wwVariable.updateValue(streamVariableId, values(), { silent: true });
     }
-
-    // After the stream completes, push one final non-silent update (if streaming was enabled)
-    if (stream && streamVariableId && finalResult?.choices) {
-        wwLib.wwVariable.updateValue(
-            streamVariableId,
-            finalResult.choices.map(choice => choice.text || choice.message?.content || '')
-        );
+    function values() {
+        return finalResult.choices.map(choice => choice.text || choice.message?.content || '');
     }
-
+    try {
+        while (!complete) {
+            const { done, value } = await reader.read();
+            pending += decoder.decode(value, { stream: !done });
+            const lines = pending.split('\n');
+            pending = lines.pop();
+            for (const line of lines) {
+                accept(line);
+                if (complete) break;
+            }
+            if (done) {
+                if (pending && !complete) accept(pending);
+                break;
+            }
+        }
+    } finally {
+        try {
+            await reader.cancel();
+        } finally {
+            reader.releaseLock();
+        }
+    }
+    if (stream && streamVariableId && finalResult.choices) wwLib.wwVariable.updateValue(streamVariableId, values());
     return finalResult;
 }
