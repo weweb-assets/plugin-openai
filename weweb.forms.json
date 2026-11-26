@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "fields": [
+      {
+        "key": "apiKey",
+        "label": "API key",
+        "type": "secret",
+        "storage": "privateData",
+        "required": true
+      },
+      {
+        "key": "securedPrompts",
+        "label": "Secured prompts",
+        "type": "records",
+        "operation": "openai.promptSettings",
+        "rowFields": [
+          {
+            "key": "title",
+            "label": "Title",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "content",
+            "label": "Content",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "actions": [
+    {
+      "code": "createChatCompletion",
+      "name": "Create chat completion",
+      "isAsync": true,
+      "validation": {
+        "requireAny": [
+          [
+            "model"
+          ],
+          [
+            "securedPrompt",
+            "messages"
+          ]
+        ]
+      },
+      "form": {
+        "fields": [
+          {
+            "key": "model",
+            "label": "Model",
+            "type": "choice",
+            "operation": "openai.models",
+            "required": true,
+            "bindable": true
+          },
+          {
+            "key": "securedPrompt",
+            "label": "System content",
+            "type": "choice",
+            "operation": "openai.promptOptions",
+            "openSettingsLabel": "Add secured prompt"
+          },
+          {
+            "key": "securedPromptVariables",
+            "label": "Prompt variables",
+            "type": "resource",
+            "operation": "openai.promptVariables"
+          },
+          {
+            "key": "messages",
+            "label": "Messages",
+            "type": "list",
+            "bindable": true,
+            "item": {
+              "type": "record",
+              "fields": [
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "type": "choice",
+                  "choices": [
+                    {
+                      "label": "System",
+                      "value": "system"
+                    },
+                    {
+                      "label": "Assistant",
+                      "value": "assistant"
+                    },
+                    {
+                      "label": "User",
+                      "value": "user"
+                    }
+                  ],
+                  "bindable": true
+                },
+                {
+                  "key": "content",
+                  "label": "Content",
+                  "type": "text",
+                  "bindable": true
+                }
+              ]
+            }
+          },
+          {
+            "key": "user",
+            "label": "User",
+            "type": "text",
+            "bindable": true
+          },
+          {
+            "key": "max_tokens",
+            "label": "Maximum tokens",
+            "type": "number",
+            "bindable": true,
+            "min": 1,
+            "max": 32000,
+            "displayDefault": 1000
+          },
+          {
+            "includeFields": "sampling"
+          },
+          {
+            "includeFields": "output"
+          }
+        ]
+      }
+    },
+    {
+      "code": "createImage",
+      "name": "Create image",
+      "isAsync": true,
+      "validation": "requiredFields",
+      "form": {
+        "fields": [
+          {
+            "key": "prompt",
+            "label": "Prompt",
+            "type": "text",
+            "bindable": true,
+            "required": true
+          },
+          {
+            "key": "user",
+            "label": "User",
+            "type": "text",
+            "bindable": true
+          },
+          {
+            "key": "n",
+            "label": "Number of images",
+            "type": "number",
+            "bindable": true,
+            "min": 1,
+            "max": 10,
+            "displayDefault": 1
+          },
+          {
+            "key": "size",
+            "label": "Size",
+            "type": "choice",
+            "choices": [
+              {
+                "label": "1024x1024",
+                "value": "1024x1024"
+              },
+              {
+                "label": "512x512",
+                "value": "512x512"
+              },
+              {
+                "label": "256x256",
+                "value": "256x256"
+              }
+            ],
+            "bindable": true,
+            "displayDefault": "1024x1024"
+          },
+          {
+            "key": "response_format",
+            "label": "Response format",
+            "type": "choice",
+            "choices": [
+              {
+                "label": "URL",
+                "value": "url"
+              },
+              {
+                "label": "Base 64",
+                "value": "b64_json"
+              }
+            ],
+            "bindable": true,
+            "displayDefault": "url"
+          }
+        ]
+      }
+    },
+    {
+      "code": "createCompletion",
+      "name": "Create completion (Legacy)",
+      "isAsync": true,
+      "validation": "requiredFields",
+      "form": {
+        "fields": [
+          {
+            "key": "model",
+            "label": "Model",
+            "type": "choice",
+            "choices": [
+              {
+                "label": "text-davinci-003 (#deprecated - 4th January 2024)",
+                "value": "text-davinci-003"
+              },
+              {
+                "label": "text-davinci-002",
+                "value": "text-davinci-002"
+              },
+              {
+                "label": "text-curie-001 (#deprecated - 4th January 2024)",
+                "value": "text-curie-001"
+              },
+              {
+                "label": "text-babbage-001 (#deprecated - 4th January 2024)",
+                "value": "text-babbage-001"
+              },
+              {
+                "label": "text-ada-001 (#deprecated - 4th January 2024)",
+                "value": "text-ada-001"
+              },
+              {
+                "label": "davinci",
+                "value": "davinci"
+              },
+              {
+                "label": "curie",
+                "value": "curie"
+              },
+              {
+                "label": "babbage",
+                "value": "babbage"
+              },
+              {
+                "label": "ada",
+                "value": "ada"
+              }
+            ],
+            "required": true
+          },
+          {
+            "key": "securedPrompt",
+            "label": "Secured prompt",
+            "type": "choice",
+            "operation": "openai.promptOptions",
+            "required": true,
+            "openSettingsLabel": "Add secured prompt",
+            "choices": [
+              {
+                "label": "Custom prompt",
+                "value": "custom"
+              }
+            ]
+          },
+          {
+            "key": "securedPromptVariables",
+            "label": "Prompt variables",
+            "type": "resource",
+            "operation": "openai.promptVariables",
+            "hiddenWhen": [
+              {
+                "field": "securedPrompt",
+                "equals": "custom"
+              }
+            ]
+          },
+          {
+            "key": "prompt",
+            "label": "Prompt",
+            "type": "text",
+            "bindable": true,
+            "required": true,
+            "visibleWhen": {
+              "field": "securedPrompt",
+              "equals": "custom"
+            }
+          },
+          {
+            "key": "suffix",
+            "label": "Suffix",
+            "type": "text",
+            "bindable": true
+          },
+          {
+            "key": "user",
+            "label": "User",
+            "type": "text",
+            "bindable": true
+          },
+          {
+            "key": "max_tokens",
+            "label": "Maximum tokens",
+            "type": "number",
+            "bindable": true,
+            "min": 1,
+            "max": 4096,
+            "displayDefault": 1000
+          },
+          {
+            "key": "best_of",
+            "label": "Best of",
+            "type": "number",
+            "bindable": true,
+            "min": 1,
+            "max": 100,
+            "displayDefault": 1
+          },
+          {
+            "includeFields": "sampling"
+          },
+          {
+            "key": "logprobs",
+            "label": "Logprobs",
+            "type": "number",
+            "bindable": true,
+            "min": 0,
+            "max": 5,
+            "displayDefault": 0
+          },
+          {
+            "includeFields": "output"
+          }
+        ]
+      }
+    }
+  ],
+  "fieldSets": {
+    "sampling": [
+      {
+        "key": "n",
+        "label": "Number of choices",
+        "type": "number",
+        "bindable": true,
+        "min": 1,
+        "max": 100,
+        "displayDefault": 1
+      },
+      {
+        "key": "temperature",
+        "label": "Temperature",
+        "type": "number",
+        "bindable": true,
+        "min": 0,
+        "max": 2,
+        "displayDefault": 1
+      },
+      {
+        "key": "top_p",
+        "label": "Top p",
+        "type": "number",
+        "bindable": true,
+        "min": 0,
+        "max": 2,
+        "displayDefault": 1
+      },
+      {
+        "key": "presence_penalty",
+        "label": "Presence penalty",
+        "type": "number",
+        "bindable": true,
+        "min": -2,
+        "max": 2,
+        "displayDefault": 0
+      },
+      {
+        "key": "frequency_penalty",
+        "label": "Frequency penalty",
+        "type": "number",
+        "bindable": true,
+        "min": -2,
+        "max": 2,
+        "displayDefault": 0
+      }
+    ],
+    "output": [
+      {
+        "key": "logit_bias",
+        "label": "Logit bias",
+        "type": "list",
+        "bindable": true,
+        "item": {
+          "type": "record",
+          "fields": [
+            {
+              "key": "key",
+              "label": "Token ID",
+              "type": "number",
+              "bindable": true
+            },
+            {
+              "key": "value",
+              "label": "Bias value",
+              "type": "number",
+              "bindable": true
+            }
+          ]
+        }
+      },
+      {
+        "key": "stop",
+        "label": "Stop",
+        "type": "list",
+        "bindable": true,
+        "item": {
+          "type": "text",
+          "bindable": true
+        }
+      },
+      {
+        "key": "stream",
+        "label": "Stream",
+        "type": "boolean"
+      },
+      {
+        "key": "streamVariableId",
+        "label": "Stream variable",
+        "type": "choice",
+        "projectVariable": "array",
+        "visibleWhen": {
+          "field": "stream",
+          "equals": true
+        }
+      }
+    ]
+  }
+}
