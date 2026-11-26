@@ -230,13 +230,21 @@ async function handleStreamResponse(response, stream, streamVariableId) {
     let pending = '';
     let complete = false;
     function accept(line) {
+        if (line.startsWith('event:') && line.slice(6).trim() === 'error') throw Error('Completion failed.');
         if (!line.startsWith('data:')) return;
         const value = line.slice(5).trim();
         if (value === '[DONE]') {
             complete = true;
             return;
         }
-        const { id, object, created, model, choices } = JSON.parse(value);
+        let event;
+        try {
+            event = JSON.parse(value);
+        } catch {
+            throw Error('Invalid completion response.');
+        }
+        if (event?.error || !Array.isArray(event?.choices)) throw Error('Completion failed.');
+        const { id, object, created, model, choices } = event;
         Object.assign(finalResult, { id, object, created, model });
         finalResult.choices ||= [];
         for (const choice of choices || []) {
@@ -284,6 +292,7 @@ async function handleStreamResponse(response, stream, streamVariableId) {
             reader.releaseLock();
         }
     }
-    if (stream && streamVariableId && finalResult.choices) wwLib.wwVariable.updateValue(streamVariableId, values());
+    if (!complete || !finalResult.choices?.length) throw Error('The completion ended before a result was available.');
+    if (stream && streamVariableId) wwLib.wwVariable.updateValue(streamVariableId, values());
     return finalResult;
 }
